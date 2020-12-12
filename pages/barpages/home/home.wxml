@@ -1,0 +1,39 @@
+<!--pages/barpages/home/home.wxml-->
+<view class="cu-bar bg-white shadow">
+  <view class="action">
+    <text class="cuIcon-titles text-blue"></text>
+    <text class="text-xl text-bold padding-bottom-xxs">今日报表</text>
+  </view>
+</view>
+<view class="data-info-view padding-sm bg-white shadow">
+  <view class="data-info-top text-sub flex align-center">
+    <view class="flex-treble margin-left-xs">日期:<text class="text-bold padding-xs">{{showReport.date}}</text></view>
+    <view class="flex-treble  margin-left-xs">收入总额:<text class="text-price padding-xs text-red text-bold">{{showReport.allMoney}}</text></view>
+    <view class="padding-xs text-sm my-btn bg-blue margin-right-xs" bindtap="refresh">刷新<text class="cuIcon-refresh margin-left-xs"></text></view>
+  </view>
+  <view class="data-info-table-title text-df text-bold flex align-center text-center padding-top-xs">
+    <view class="flex-treble">订单类型</view>
+    <view class="flex-twice">数量</view>
+    <view class="flex-twice">金额</view>
+  </view>
+  <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs" wx:for="{{showReport.orderList}}">
+    <view class="flex-treble">{{item.type}}</view>
+    <view class="flex-twice">{{item.number}}</view>
+    <view class="flex-twice text-price">{{item.money}}</view>
+  </view>
+</view>
+<!--操作菜单-->
+<view class="cu-bar bg-white shadow">
+  <view class="action">
+    <text class="cuIcon-titles text-blue"></text>
+    <text class="text-xl text-bold padding-bottom-xxs">管理菜单</text>
+  </view>
+</view>
+<view class='nav-list'>
+  <navigator open-type="navigate" hover-class='none' url="{{item.path}}" class="nav-li bg-{{item.color}}" wx:for="{{menus}}" wx:key>
+    <view class="nav-title">{{item.title}}</view>
+    <view class="nav-name">{{item.name}}</view>
+    <text class='cuIcon-{{item.icon}}'></text>
+  </navigator>
+</view>
+<view class='cu-tabbar-height'></view>

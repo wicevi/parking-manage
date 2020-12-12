@@ -1,0 +1,49 @@
+/* pages/control/control.wxss */
+@import "/colorui/main.wxss";
+@import "/colorui/icon.wxss";
+
+.my-btn{
+  border-radius: 8rpx;
+}
+.my-btn:active{
+  background-color: #e9eaec;
+  color: black;
+}
+
+.video-view{
+  width: 90%;
+  margin: 20rpx auto;
+}
+.video-view-tip-img{
+  width: 40rpx;
+  height: 40rpx;
+}
+.content-view{
+  width: 96%;
+  margin: 20rpx auto;
+}
+.daozha-cu-bar{
+  border-bottom: 1rpx solid #dddee1;
+}
+.daozha-view{
+  width: 96%;
+  margin: 10rpx auto;
+}
+.daozha-view-img{
+  width: 60rpx;
+  height: 60rpx;
+}
+.daozha-view-text{
+  text-overflow: ellipsis;
+	white-space: nowrap;
+  overflow: hidden;
+}
+.daozha-view-button{
+  padding-left: 15rpx;
+  padding-right: 15rpx;
+  margin-left: 10rpx;
+}
+.in-out-view{
+  padding: 20rpx;
+  border: 1rpx solid #dddee1;
+}

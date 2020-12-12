@@ -1,0 +1,22 @@
+/**index.wxss**/
+.top-picker-view{
+  margin-left: 20rpx;
+  width: 320rpx;
+}
+.top-title-view{
+  width: 160rpx
+}
+.top-picker-text{
+  display: inline-block;
+  text-overflow: ellipsis;
+	white-space: nowrap;
+  overflow: hidden;
+  max-width: 280rpx;
+}
+.top-picker-item-view{
+  float: left;
+}
+.top-picker-icon-view{
+  float: left;
+}
+

@@ -1,0 +1,56 @@
+<!--index.wxml-->
+<!--顶部沉浸式导航栏-->
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar bg-Primary" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <block wx:if="{{parkList.length>0}}">
+      <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
+        <picker range="{{parkList}}" range-key="parkName" value="{{parkIndex}}" bindchange="parkChange">
+          <view class="text-lg top-picker-item-view" style="padding-top:{{StatusBar/10*2.75}}px;">
+            <text class="top-picker-text">{{parkList[parkIndex].parkName}}</text>
+          </view>
+          <view class="top-picker-icon-view" style="padding-top:{{StatusBar/10*4.25}}px;">
+            <text class="cuIcon-unfold"></text>
+          </view>
+        </picker>
+      </view>
+    </block>
+    <block wx:if="{{parkList.length==0&&isLogin}}">
+      <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
+        该用户暂无管理车场
+      </view>
+    </block>
+    <block wx:if="{{!isLogin}}">
+      <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
+        请先登录
+      </view>
+    </block>
+    <view class="top-title-view text-bold text-{{PageCur!='user'?'right':'left margin-left-sm'}}">
+    {{PageCur=='control'?'控制中心':(PageCur=='user'?'个人中心':'首页')}}
+    </view>
+  </view>
+</view>
+<!--内容-->
+<home showReport="{{reportData}}" wx:if="{{PageCur=='home'}}"></home>
+<control bind:cameraChange="cameraChange" bind:controlEvent="controlEvent" controlSet="{{controlData}}" wx:if="{{PageCur=='control'}}"></control>
+<user wx:if="{{PageCur=='user'}}"></user>
+<!--底部标签-->
+<view class="cu-bar tabbar bg-white shadow foot">
+  <view class="action" bindtap="navChange" data-cur="home">
+    <view class='cuIcon-cu-image'>
+      <text class="cuIcon-{{PageCur=='home'?'homefill text-cyan':'home text-gray'}}"></text>
+    </view>
+    <view class="{{PageCur=='home'?'text-cyan':'text-gray'}}">首页</view>
+  </view>
+  <view class="action" bindtap="navChange" data-cur="control">
+    <view class='cuIcon-cu-image'>
+      <text class="cuIcon-{{PageCur=='control'?'repairfill text-cyan':'repair text-gray'}}"></text>
+    </view>
+    <view class="{{PageCur=='control'?'text-cyan':'text-gray'}}">控制</view>
+  </view>
+  <view class="action" bindtap="navChange" data-cur="user">
+    <view class='cuIcon-cu-image'>
+      <text class="cuIcon-{{PageCur=='user'?'peoplefill text-cyan':'people text-gray'}}"></text>
+    </view>
+    <view class="{{PageCur=='user'?'text-cyan':'text-gray'}}">我的</view>
+  </view>
+</view>

@@ -1,0 +1,96 @@
+<!--pages/control/control.wxml-->
+<!--车场摄像头视频-->
+<view class="cu-bar bg-white shadow">
+  <view class="action">
+    <text class="cuIcon-titles text-blue"></text>
+    <text class="text-xl text-bold padding-bottom-xxs">车场实况</text>
+  </view>
+  <view class="flex-treble"></view>
+  <view class="">
+    <view class="cu-tag line-blue margin-right-xs">
+      <picker range="{{controlSet.cameraList}}" range-key="cameraName" value="{{controlSet.cameraIndex}}" bindchange="selectCamera">
+        <text>{{controlSet.cameraList[controlSet.cameraIndex].cameraName}}</text>
+        <text class="cuIcon-unfold"></text>
+      </picker>
+    </view>
+  </view>
+  <view class="text-sm margin-right text-center">
+    <view class="padding-xs my-btn bg-blue" data-type="link" bindtap="tapEvent">
+      <text>连接</text>
+      <!--attention-->
+      <text class="cuIcon-link padding-left-xs"></text>
+    </view>
+  </view>
+</view>
+<view class="video-view bg-white shadow">
+  <view class="flex align-center justify-center">
+    <view class="padding-xs">
+      <image class="video-view-tip-img" src="../../../images/unlink.png"></image>
+    </view>
+    <view class="padding-bottom-xs">
+      <text class="text-lg text-red">未连接</text>
+    </view>
+  </view>
+</view>
+<!--车场控制进出 起落闸等-->
+<view class="cu-bar bg-white shadow">
+  <view class="action">
+    <text class="cuIcon-titles text-blue"></text>
+    <text class="text-xl text-bold padding-bottom-xxs">控制菜单</text>
+  </view>
+</view>
+<!--控制道闸-->
+<view class="content-view bg-white shadow padding-bottom-xxs">
+  <view class="cu-bar bg-white daozha-cu-bar">
+    <view class="action">
+      <text class="cuIcon-title text-blue"></text>
+      <text>道闸控制</text>
+    </view>
+    <!--
+    <view class="flex-treble"></view>
+    <view class="text-sm daozha-view-button text-center">
+      <view class="padding-xs my-btn bg-blue">
+        <text>切换</text>
+        <text class="cuIcon-order padding-left-xs"></text>
+      </view>
+    </view>
+    -->
+  </view>
+  <view class="daozha-view flex align-center" wx:for="{{controlSet.gates}}">
+    <image class="daozha-view-img padding-xs" src="../../../images/{{item.direction=='进'?'in':'out'}}.png"></image>
+    <text class="daozha-view-text text-lg text-bold flex-treble">{{item.name}}</text>
+    <!--
+    <view wx:if="{{item.isHaveBackupOpen}}" class="daozha-view-button padding-xs  my-btn bg-red">应急开闸</view>
+    -->
+    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="open" data-value="{{item.gateId}}">开闸</view>
+    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="close" data-value="{{item.gateId}}">关闸</view>
+  </view>
+</view>
+<!--控制进出-->
+<view class="content-view bg-white shadow">
+  <view class="cu-bar bg-white daozha-cu-bar">
+    <view class="action">
+      <text class="cuIcon-title text-blue"></text>
+      <text>进出限制</text>
+    </view>
+  </view>
+  <view class="flex flex-wrap text-center">
+    <view class="in-out-view basis-df flex align-center">
+      <text class="flex-treble text-bold text-gray">临时车辆进出</text>
+      <switch class="green radius sm" checked="{{controlSet.tempCarControl}}" bindchange="tapEvent" data-type="tempCarControl" data-value="{{!controlSet.tempCarControl}}"></switch>
+    </view>
+    <view class="in-out-view basis-df flex align-center">
+      <text class="flex-treble text-bold text-gray">VIP车辆进出</text>
+      <switch class="green radius sm" checked="{{controlSet.vipCarControl}}" bindchange="tapEvent" data-type="vipCarControl" data-value="{{!controlSet.vipCarControl}}"></switch>
+    </view>
+    <view class="in-out-view basis-df flex align-center">
+      <text class="flex-treble text-bold text-gray">剩余车位控制</text>
+      <switch class="green radius sm" checked="{{controlSet.parkPlaceControl}}" bindchange="tapEvent" data-type="parkPlaceControl" data-value="{{!controlSet.parkPlaceControl}}"></switch>
+    </view>
+    <view class="in-out-view basis-df flex align-center">
+      <text class="flex-treble text-bold text-gray">剩余车位：{{controlSet.parkPlaceNumber}}</text>
+      <view class="padding-xs my-btn bg-blue" bindtap="tapEvent" data-type="modify" data-value="{{controlSet.parkPlaceNumber}}">修改</view>
+    </view>
+  </view>
+</view>
+<view class='cu-tabbar-height'></view>

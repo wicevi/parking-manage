@@ -1,0 +1,63 @@
+<!--pages/user/user.wxml-->
+<!--背景-->
+<view class="backimg-view" style="margin-top:{{CustomBar}}px;">
+  <view class="logo-view">
+    <image class="cu-avatar xl round padding-sm bg-white" src="../../../images/logo.png"></image>
+  </view>
+  <view class="app-name-view">
+    <text class="text-xl text-bold">滴滴停车管理系统</text>
+  </view>
+  <view class="usr-name-view">
+    <text class="text-lg">当前账号：256868 (超级管理员)</text>
+  </view>
+</view>
+<!--菜单-->
+<view class="cu-list menu card-menu shadow-lg radius">
+  <view class="cu-item arrow">
+    <button class="cu-btn content" bindtap="logout">
+      <text class="cuIcon-forward text-red"></text>
+      <text class="text-grey">退出登录</text>
+    </button>
+  </view>
+  <view class="cu-item arrow">
+    <button class="cu-btn content">
+      <text class="cuIcon-refresh text-orange"></text>
+      <text class="text-grey">更改密码</text>
+    </button>
+  </view>
+  <view class="cu-item arrow">
+    <button class="cu-btn content">
+      <text class="cuIcon-add text-purple"></text>
+      <text class="text-grey">添加车场</text>
+    </button>
+  </view>
+  <view class="cu-item arrow">
+    <button class="cu-btn content">
+      <text class="cuIcon-friendadd text-pink"></text>
+      <text class="text-grey">新建/管理账户</text>
+    </button>
+  </view>
+  <view class="cu-item arrow">
+    <button class="cu-btn content">
+      <text class="cuIcon-cascades text-brown"></text>
+      <text class="text-grey">新建/管理车场</text>
+    </button>
+  </view>
+  <view class="cu-item arrow">
+    <button class="cu-btn content">
+      <text class="cuIcon-write text-green"></text>
+      <text class="text-grey">意见反馈</text>
+    </button>
+  </view>
+  <view class="cu-item arrow">
+    <button class="cu-btn content">
+      <text class="cuIcon-info text-cyan"></text>
+      <text class="text-grey">关于我们</text>
+    </button>
+  </view>
+</view>
+<view class="cu-tabbar-height"></view>
+
+
+
+

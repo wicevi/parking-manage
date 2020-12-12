@@ -1,0 +1,213 @@
+<!--pages/menupages/order_manage/order_manage.wxml-->
+<wxs module="tools" src="../../../utils/tool.wxs"></wxs>
+<!--顶部选择器-->
+<view class="top-select-view bg-white padding-sm shadow">
+  <view class="flex justify-between align-center">
+    <view class="top-select-time-view flex align-center">
+      <text class="text-lg padding-bottom-xxs">日期:</text>
+      <picker class="cu-tag line-primer3 radius margin-left-xxs" mode="date" value="{{startDate}}" start="2020-01-01" end="2050-01-01" bindchange="startDateChange">
+        <text class="text-bold">{{startDate}}</text>
+        <text class="cuIcon-unfold"></text>
+      </picker>
+      <text class="text-lg padding-bottom-xxs margin-left-xxs">至</text>
+      <picker class="cu-tag line-primer3 radius margin-left-xxs" mode="date" value="{{endDate}}" start="{{startDate}}" end="2050-01-01" bindchange="endDateChange">
+        <text class="text-bold">{{endDate}}</text>
+        <text class="cuIcon-unfold"></text>
+      </picker>
+    </view>
+    <view class="top-select-type-view flex align-center">
+      <text class="text-lg padding-bottom-xxs">筛选:</text>
+      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{typeList}}" range-key="title" value="{{typeIndex}}" bindchange="selectChange">
+        <text class="text-bold">{{typeList[typeIndex].title}}</text>
+        <text class="cuIcon-unfold"></text>
+      </picker>
+    </view>
+  </view>
+  <view class="flex justify-between align-center padding-top-sm">
+    <view class="top-select-type-view flex align-center">
+      <text class="text-lg padding-bottom-xxs">车场:</text>
+      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{parkList}}" range-key="parkName" value="{{parkIndex}}" bindchange="parkChange">
+        <view class="flex align-center">
+          <text class="ellipsis-view text-bold">{{parkList[parkIndex].parkName}}</text>
+          <text class="cuIcon-unfold"></text>
+        </view>
+      </picker>
+    </view>
+    <view class="top-select-type-view flex align-center">
+      <text class="text-lg padding-bottom-xxs">排序:</text>
+      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{sortList}}" range-key="title" value="{{sortIndex}}" bindchange="sortChange">
+        <text class="text-bold">{{sortList[sortIndex].title}}</text>
+        <text class="cuIcon-unfold"></text>
+      </picker>
+    </view>
+  </view>
+</view>
+<!--详细订单列表-->
+<view class="order-info-view margin-lr margin-tb-sm padding-sm bg-white shadow text-lg" wx:for="{{briefOrder}}" data-index="{{index}}" bindtap="tapOrder">
+  <view class="order-info-item flex">
+    <view class="flex-twice flex align-center">
+      <text class="padding-bottom-xxs">车牌号:</text>
+      <view class="cu-tag bg-Plate margin-left-xs">{{tools.strToPlate(item.plate)}}</view>
+      <text class="padding-bottom-xxs margin-left-xs text-gray">({{item.type}})</text>
+    </view>
+    <view class="flex-sub flex align-center">
+      <text class="padding-bottom-xxs">状态:</text>
+      <view class="cu-tag radius bg-{{item.state=='已结算'?'green':'red'}} margin-left-xs">{{item.state}}</view>
+    </view>
+  </view>
+  <view class="order-info-item">
+    <text>创建时间:</text>
+    <text class="margin-left-xs text-bold">{{item.createTime}}</text>
+  </view>
+  <view class="order-info-item">
+    <text>结算时间:</text>
+    <text wx:if="{{tools.strlen(item.finishTime)>10}}" class="margin-left-xs text-bold">{{item.finishTime}}</text>
+    <text wx:if="{{tools.strlen(item.finishTime)<=10}}" class="margin-left-xs text-bold">暂未离场</text>
+  </view>
+</view>
+<!-- 添加按钮 -->
+<view class="suspension-view flex align-center text-center" bindtap="openModal_add">
+  <text class="cuIcon-add flex-sub"></text>
+</view>
+<!-- 订单详情弹窗 -->
+<view class="cu-modal {{isOpenModal_info?'show':''}}">
+  <view class="cu-dialog text-lg">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold text-xl">订单详情</view>
+      <view class="action" bindtap="closeModal_info">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="order-info-modal padding-sm bg-gray">
+      <!-- 车牌号和订单状态 -->
+      <view class="order-info-item flex align-center">
+        <view class="flex-twice flex align-center">
+          <text class="padding-bottom-xxs">订单车牌:</text>
+          <view class="cu-tag bg-Plate margin-left-xs">{{tools.strToPlate(briefOrder[orderIndex].plate)}}</view>
+          <text class="padding-bottom-xxs margin-left-xs text-gray">({{briefOrder[orderIndex].type}})</text>
+        </view>   
+        <view class="flex-sub flex align-center justify-end">
+          <text class="padding-bottom-xxs">状态:</text>
+          <view class="cu-tag radius bg-{{briefOrder[orderIndex].state=='已结算'?'green':'red'}} margin-left-xs">{{briefOrder[orderIndex].state}}</view>
+        </view>
+      </view>
+      <!-- 进场时间和图片 -->
+      <view class="order-info-item flex align-center">
+        <text class="padding-bottom-xxs">进场时间:</text>
+        <text class="margin-left-xs text-bold">{{briefOrder[orderIndex].createTime}}</text>
+        <view class="flex-sub flex align-center justify-end">
+          <!-- <view class="padding-xs my-btn bg-blue text-sm" bindtap="viewImage" data-url="{{briefOrder[orderIndex].inPic}}" wx:if="{{tools.strlen(briefOrder[orderIndex].inPic)>10}}">
+            <text>进场照片</text>
+            <text class="cuIcon-attention padding-left-xs"></text>
+          </view> -->
+          <view class="padding-xs my-btn bg-blue text-sm" bindtap="tapInPhoto" wx:if="{{tools.strlen(briefOrder[orderIndex].inPic)<=10}}">
+            <text>无进场照片</text>
+          </view>
+        </view>
+      </view>
+      <view class="order-info-item text-center" wx:if="{{tools.strlen(briefOrder[orderIndex].inPic)>10}}" bindtap="viewImage" data-url="{{briefOrder[orderIndex].inPic}}">
+        <image style="width:576rpx;height:324rpx;" src="{{briefOrder[orderIndex].inPic}}"></image>
+      </view>
+      <!-- 出场时间和图片 -->
+      <view class="order-info-item flex align-center">
+        <text  class="padding-bottom-xxs">离场时间:</text>
+        <text wx:if="{{tools.strlen(briefOrder[orderIndex].finishTime)>10}}" class="margin-left-xs text-bold">{{briefOrder[orderIndex].finishTime}}</text>
+        <text wx:if="{{tools.strlen(briefOrder[orderIndex].finishTime)<=10}}" class="padding-bottom-xxs margin-left-xs text-bold">暂未离场</text>
+        <view class="flex-sub flex align-center justify-end" wx:if="{{tools.strlen(briefOrder[orderIndex].finishTime)>10}}">
+          <!-- <view class="padding-xs my-btn bg-blue text-sm" bindtap="viewImage" data-url="{{briefOrder[orderIndex].outPic}}" wx:if="{{tools.strlen(briefOrder[orderIndex].outPic)>10}}">
+            <text>离场照片</text>
+            <text class="cuIcon-attention padding-left-xs"></text>
+          </view> -->
+          <view class="padding-xs my-btn bg-blue text-sm" wx:if="{{tools.strlen(briefOrder[orderIndex].outPic)<=10}}">
+            <text>无离场照片</text>
+          </view>
+        </view>
+      </view>
+      <view class="order-info-item text-center" wx:if="{{tools.strlen(briefOrder[orderIndex].outPic)>10}}" bindtap="viewImage" data-url="{{briefOrder[orderIndex].outPic}}">
+        <image style="width:576rpx;height:324rpx;" src="{{briefOrder[orderIndex].outPic}}"></image>
+      </view>
+      <!-- 停车时长和价格 -->
+      <view class="order-info-item flex align-center">
+        <text>停车时长:</text>
+        <text class="margin-lr-xs text-xxl text-bold text-orange">{{tools.toFix_0(briefOrder[orderIndex].parkingHours/3600)}}</text>
+        <text>小时</text>
+        <text class="margin-lr-xs text-xxl text-bold text-orange">{{tools.toFix_0(briefOrder[orderIndex].parkingHours%3600/60)}}</text>
+        <text>分钟</text>
+        <view class="flex-sub flex align-center justify-end">
+          <text>车费:</text>
+          <text class="margin-lr-xs text-price text-xxl text-red text-bold">{{tools.toFix_2(briefOrder[orderIndex].parkingFee/100)}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <view class="margin-left padding-xs my-btn bg-blue" bindtap="finishAndOpen">
+          <text>结算并开闸</text>
+        </view>
+        <view class="margin-left padding-xs padding-lr my-btn bg-blue" bindtap="finish">
+          <text>结算</text>
+        </view>
+        <view class="margin-left padding-xs padding-lr my-btn bg-cyan" bindtap="closeModal_info">
+          <text>关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<!-- 添加订单弹窗 -->
+<view class="cu-modal {{isOpenModal_add?'show':''}}">
+  <view class="cu-dialog text-lg">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold text-xl">手动添加订单</view>
+      <view class="action" bindtap="closeModal_add">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="flex align-center">
+      <view class="flex-sub">车牌号</view>
+      <view class="flex-treble">
+        <input class="order-add-plate-input" type="text" placeholder="例：闽D88888"/>
+      </view>
+    </view>
+    <view class="flex align-center">
+      <view class="flex-sub">入场时间</view>
+      <view class="flex-treble flex align-center justify-center">
+        <input class="order-add-time-year-input" type="number" value="2020" disabled="true"/>
+        -
+        <input class="order-add-time-input" type="number"/>
+        -
+        <input class="order-add-time-input" type="number"/>
+        <input style="margin-left:20rpx;" class="order-add-time-input" type="number"/>
+        :
+        <input class="order-add-time-input" type="number"/>
+      </view>
+    </view>
+    <view class="flex align-center margin-tb-sm">
+      <view class="flex-sub">入场图片</view>
+      <view class="flex-treble flex justify-center">
+        <view class="cameraadd-view flex align-center justify-center" bindtap="chooseImage" wx:if="{{inPartPhoto==null}}">
+          <text class="cuIcon-cameraadd"></text>
+        </view>
+        <view class="cameraadd-view" bindtap="viewImage" data-url="{{inPartPhoto}}" wx:if="{{inPartPhoto!=null}}">
+          <image class="cameraadd-img" src='{{inPartPhoto}}' mode='aspectFit'></image>
+        </view>
+        <view class="flex align-center">
+          <view class="padding-xs my-btn bg-red margin-lr-xs" bindtap="deleteImage" wx:if="{{inPartPhoto!=null}}">
+            <text class="cuIcon-delete padding-right-xs"></text>
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <view class="margin-left padding-xs padding-lr my-btn bg-blue" bindtap="addOrder">
+          <text>添加</text>
+        </view>
+        <view class="margin-left padding-xs padding-lr my-btn bg-cyan" bindtap="closeModal_add">
+          <text>关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

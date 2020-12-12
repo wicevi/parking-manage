@@ -1,0 +1,27 @@
+var tools = {
+  toFix_0: function (value) {       
+    return value.toFixed(0)    
+  },
+  toFix_2: function (value) {       
+      return value.toFixed(2) 
+  },
+  strlen: function(value) {    
+    return value.length
+  },
+  strToPlate: function(value) {    
+    var len=value.length;
+    var reStr="";
+    for(var i=0;i<len;i++){
+      reStr+=value[i];
+      if(i==1)reStr+='·';
+    }
+    return reStr;
+  },
+}
+
+module.exports = {   
+  toFix_0: tools.toFix_0,
+  toFix_2: tools.toFix_2,
+  strlen : tools.strlen,
+  strToPlate: tools.strToPlate
+}
