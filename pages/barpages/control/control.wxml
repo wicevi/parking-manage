@@ -8,8 +8,8 @@
   <view class="flex-treble"></view>
   <view class="">
     <view class="cu-tag line-blue margin-right-xs">
-      <picker range="{{controlSet.cameraList}}" range-key="cameraName" value="{{controlSet.cameraIndex}}" bindchange="selectCamera">
-        <text>{{controlSet.cameraList[controlSet.cameraIndex].cameraName}}</text>
+      <picker range="{{controlSet.cameraList}}" range-key="Name" value="{{controlSet.cameraIndex}}" bindchange="selectCamera">
+        <text>{{controlSet.cameraList[controlSet.cameraIndex].Name}}</text>
         <text class="cuIcon-unfold"></text>
       </picker>
     </view>
@@ -56,14 +56,14 @@
     </view>
     -->
   </view>
-  <view class="daozha-view flex align-center" wx:for="{{controlSet.gates}}">
-    <image class="daozha-view-img padding-xs" src="../../../images/{{item.direction=='进'?'in':'out'}}.png"></image>
-    <text class="daozha-view-text text-lg text-bold flex-treble">{{item.name}}</text>
+  <view class="daozha-view flex align-center" wx:for="{{controlSet.cameraList}}">
+    <image class="daozha-view-img padding-xs" src="../../../images/{{item.Direction==1?'in':'out'}}.png"></image>
+    <text class="daozha-view-text text-lg text-bold flex-treble">{{item.Name}}</text>
     <!--
     <view wx:if="{{item.isHaveBackupOpen}}" class="daozha-view-button padding-xs  my-btn bg-red">应急开闸</view>
     -->
-    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="open" data-value="{{item.gateId}}">开闸</view>
-    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="close" data-value="{{item.gateId}}">关闸</view>
+    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="open" data-value="{{item.ID}}">开闸</view>
+    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="close" data-value="{{item.ID}}">关闸</view>
   </view>
 </view>
 <!--控制进出-->

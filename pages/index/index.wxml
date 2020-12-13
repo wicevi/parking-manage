@@ -4,9 +4,9 @@
   <view class="cu-bar bg-Primary" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <block wx:if="{{parkList.length>0}}">
       <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
-        <picker range="{{parkList}}" range-key="parkName" value="{{parkIndex}}" bindchange="parkChange">
+        <picker range="{{parkList}}" range-key="ParkName" value="{{parkIndex}}" bindchange="parkChange">
           <view class="text-lg top-picker-item-view" style="padding-top:{{StatusBar/10*2.75}}px;">
-            <text class="top-picker-text">{{parkList[parkIndex].parkName}}</text>
+            <text class="top-picker-text">{{parkList[parkIndex].ParkName}}</text>
           </view>
           <view class="top-picker-icon-view" style="padding-top:{{StatusBar/10*4.25}}px;">
             <text class="cuIcon-unfold"></text>
@@ -14,14 +14,9 @@
         </picker>
       </view>
     </block>
-    <block wx:if="{{parkList.length==0&&isLogin}}">
+    <block wx:if="{{parkList.length==0}}">
       <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
         该用户暂无管理车场
-      </view>
-    </block>
-    <block wx:if="{{!isLogin}}">
-      <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
-        请先登录
       </view>
     </block>
     <view class="top-title-view text-bold text-{{PageCur!='user'?'right':'left margin-left-sm'}}">
@@ -30,9 +25,9 @@
   </view>
 </view>
 <!--内容-->
-<home showReport="{{reportData}}" wx:if="{{PageCur=='home'}}"></home>
+<home showReport="{{reportData}}" wx:if="{{PageCur=='home'}}" bind:Fresh="updateReportData"></home>
 <control bind:cameraChange="cameraChange" bind:controlEvent="controlEvent" controlSet="{{controlData}}" wx:if="{{PageCur=='control'}}"></control>
-<user wx:if="{{PageCur=='user'}}"></user>
+<user wx:if="{{PageCur=='user'}}" bind:userMenuEvent="userMenuEvent" userData="{{userInfo}}"></user>
 <!--底部标签-->
 <view class="cu-bar tabbar bg-white shadow foot">
   <view class="action" bindtap="navChange" data-cur="home">

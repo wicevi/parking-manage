@@ -50,7 +50,7 @@ Component({
   },
   methods:{
     refresh:function(e){
-      console.log("点击：refresh");
+      this.triggerEvent("Fresh",null);
     }
-  }
+  },
 })

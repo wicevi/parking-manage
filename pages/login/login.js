@@ -11,6 +11,7 @@ Page({
     username:"",
     password:"",
     isVisible:false,//密码是否可见
+    eventChannel:null,
   },
   visibleChange:function(e){
     this.setData({
@@ -79,7 +80,13 @@ Page({
         console.log(res);
         if(res.data.Code=='success'){
           //登录成功
-          
+          console.log('Appsession:'+res.header.Appsession);
+          app.requestHeader.Appsession=res.header.Appsession;
+          wx.setStorage({
+            data: app.requestHeader.Appsession,
+            key: 'Appsession',
+          })
+          this_.checkLogin();
         }else{
           //登录失败
           wx.showModal({
@@ -104,32 +111,56 @@ Page({
       }
     });
   },
+  //验证登录并获取全局车场信息
+  checkLogin:function(e){
+    var this_=this;
+    wx.request({
+      url: app.HOST+app.URLS.query_parks,
+      header: app.requestHeader,
+      success: function(res){
+        console.log(res);
+        if(res.data.Code=='success'){
+          app.globalData.userInfo.userName=res.header.Username;
+          app.globalData.userInfo.userGroup=res.header.Usertype;
+          app.isLogin=true;
+          this_.data.eventChannel.emit("loginSuccess",null);
+          app.globalData.parkList=res.data.Result;
+          wx.navigateBack({
+            delta: 0,
+          })
+        }
+      },
+      fail:function(res){
+        console.log(res);
+      },
+      complete:function(res){
+        this_.setData({
+          isLogining:false
+        });
+      }
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var this_=this;
     var appSession=options.Appsession;
+    this_.setData({
+      eventChannel:this_.getOpenerEventChannel()
+    })
     if(appSession!=null){//登录验证
       this.setData({
         isLogining:true
       });
       app.requestHeader.Appsession=appSession;
-      wx.request({
-        url: app.HOST+app.URLS.query_parks,
-        header: app.requestHeader,
-        success: function(res){
-          console.log(res);
-        },
-        fail:function(res){
-          console.log(res);
-
-        },
-        complete:function(res){
-          this.setData({
-            isLogining:false
-          });
-        }
-      });
+      this_.checkLogin();
+    }
+    if(options.tip!=null){//提示信息
+      wx.showToast({
+        title: options.tip,
+        image: '/images/tip.png'
+      })
     }
   },
 })

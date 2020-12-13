@@ -6,10 +6,9 @@ App({
   URLS:{
     login:"/app/login",
     query_parks:"/app/config/parks/query",
-    prepay:"/app/io/order/prepay",
-    history_park:"/app/plate/history_park/query",
-    vipinfo:"/app/vip/query",
-    rentpay:"/app/vip/order/build"
+    query_report:"/app/park/income/query",
+    query_point:"/app/config/point/query",
+    opengate:"/app/config/point/opengate",
   },
   onLaunch: function () {
     //获取导航栏相关
@@ -21,19 +20,13 @@ App({
         this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
       }
     });
-    //获取登录状态
-    wx.getStorage({
-      key: 'Appsession',
-      success:function(e){
-        //如果有 尝试验证
-        wx.navigateTo({
-          url: '/pages/login/login?Appsession='+e.data,
-        })
-      }
-    });
   },
   globalData: {
     parkList:[],
-    parkIndex:0
+    parkIndex:0,
+    userInfo:{
+      userName:'null',
+      userGroup:'null'
+    }
   }
 })

@@ -4,9 +4,9 @@
   <view class="flex justify-between align-center">
     <view class="top-select-type-view flex align-center">
       <text class="text-lg padding-bottom-xxs">车场:</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{parkList}}" range-key="parkName" value="{{parkIndex}}" bindchange="parkChange">
+      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{parkList}}" range-key="ParkName" value="{{parkIndex}}" bindchange="parkChange">
         <view class="flex align-center">
-          <text class="ellipsis-view text-bold">{{parkList[parkIndex].parkName}}</text>
+          <text class="ellipsis-view text-bold">{{parkList[parkIndex].ParkName}}</text>
           <text class="cuIcon-unfold"></text>
         </view>
       </picker>

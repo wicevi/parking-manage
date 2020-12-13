@@ -7,20 +7,41 @@
 </view>
 <view class="data-info-view padding-sm bg-white shadow">
   <view class="data-info-top text-sub flex align-center">
-    <view class="flex-treble margin-left-xs">日期:<text class="text-bold padding-xs">{{showReport.date}}</text></view>
-    <view class="flex-treble  margin-left-xs">收入总额:<text class="text-price padding-xs text-red text-bold">{{showReport.allMoney}}</text></view>
-    <view class="padding-xs text-sm my-btn bg-blue margin-right-xs" bindtap="refresh">刷新<text class="cuIcon-refresh margin-left-xs"></text></view>
+    <view class="flex-treble margin-left-xs">日期:<text class="text-bold padding-xs">{{showReport.data?showReport.data.Date:'----/--/--'}}</text></view>
+    <view class="flex-treble  margin-left-xs">收入总额:<text class="text-price padding-xs text-red text-bold">{{showReport.data?showReport.data.VipPrice+showReport.data.IOPrice:'---'}}</text></view>
+    <view class="padding-xs text-sm my-btn bg-blue margin-right-xs" bindtap="refresh" wx:if="{{!showReport.isLoad}}">刷新<text class="cuIcon-refresh margin-left-xs"></text></view>
+    <view class="padding-xs text-sm my-btn bg-blue margin-right-xs" wx:if="{{showReport.isLoad}}">加载中...</view>
   </view>
-  <view class="data-info-table-title text-df text-bold flex align-center text-center padding-top-xs">
-    <view class="flex-treble">订单类型</view>
-    <view class="flex-twice">数量</view>
-    <view class="flex-twice">金额</view>
-  </view>
-  <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs" wx:for="{{showReport.orderList}}">
-    <view class="flex-treble">{{item.type}}</view>
-    <view class="flex-twice">{{item.number}}</view>
-    <view class="flex-twice text-price">{{item.money}}</view>
-  </view>
+  <block wx:if="{{showReport.isLoad}}">
+    <image src="/images/loading3.gif" style="width:120rpx;height:120rpx;margin:0rpx auto;display:block;"></image>
+    <view class="text-center">加载数据中...</view>
+  </block>
+  <block wx:if="{{!showReport.isLoad&&!showReport.data}}">
+    <image src="/images/error.png" style="width:80rpx;height:80rpx;margin:20rpx auto;display:block;"></image>
+    <view class="text-center">加载数据失败:{{showReport.err_info}}</view>
+  </block>
+  <block wx:if="{{!showReport.isLoad&&showReport.data}}">
+    <view class="data-info-table-title text-df text-bold flex align-center text-center padding-top-xs">
+      <view class="flex-treble">订单类型</view>
+      <view class="flex-twice">数量</view>
+      <view class="flex-twice">金额</view>
+    </view>
+    <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs">
+      <view class="flex-treble">包年包月</view>
+      <view class="flex-twice">{{showReport.data.VipCount}}</view>
+      <view class="flex-twice text-price">{{showReport.data.VipPrice}}</view>
+    </view>
+    <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs">
+      <view class="flex-treble">临时缴费</view>
+      <view class="flex-twice">{{showReport.data.IOCount}}</view>
+      <view class="flex-twice text-price">{{showReport.data.IOPrice}}</view>
+    </view>
+    <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs">
+      <view class="flex-treble">异常进出</view>
+      <view class="flex-twice">{{showReport.data.AbnormalCount}}</view>
+      <view class="flex-twice text-price">0</view>
+    </view>
+  </block>
 </view>
 <!--操作菜单-->
 <view class="cu-bar bg-white shadow">

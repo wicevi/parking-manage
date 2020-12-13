@@ -62,4 +62,11 @@ Page({
       parkIndex: app.globalData.parkIndex
     })
   },
+   //切到前台
+   onShow:function(){
+    this.setData({
+      parkList:app.globalData.parkList,
+      parkIndex: app.globalData.parkIndex
+    })
+  }
 })
