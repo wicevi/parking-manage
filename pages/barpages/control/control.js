@@ -6,11 +6,33 @@ Component({
       value:null
     }
   },
+  data:{
+    outMode:[
+      {
+        name:"免费放行",
+        value:"free"
+      },
+      {
+        name:"最低收费",
+        value:"minprice"
+      },
+      {
+        name:"人工确认",
+        value:"manual"
+      },
+    ],
+  },
   methods:{
     selectCamera(e){
       var cameraIndex_=e.detail.value;
       this.triggerEvent("cameraChange", {
         cameraIndex:cameraIndex_
+      });
+    },
+    selectNoPlateOutMode(e){
+      var NoPlate_OutMode_index_=e.detail.value;
+      this.triggerEvent("NoPlateOutModeChange", {
+        NoPlate_OutMode_index:NoPlate_OutMode_index_
       });
     },
     tapEvent(e){
@@ -20,6 +42,6 @@ Component({
         type:type_,
         value:value_
       });
-    }
+    }, 
   }
 })

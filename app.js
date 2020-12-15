@@ -8,7 +8,12 @@ App({
     query_parks:"/app/config/parks/query",
     query_report:"/app/park/income/query",
     query_point:"/app/config/point/query",
+    query_orders:"/app/io/order/query",
+    query_parksets:"/app/config/park/query",
+    change_parkset:"/app/config/park/mod",
+    change_password:"/app/config/user/pw/mod",
     opengate:"/app/config/point/opengate",
+    snapimage:"/app/config/point/snapimage",
   },
   onLaunch: function () {
     //获取导航栏相关
@@ -23,7 +28,7 @@ App({
   },
   globalData: {
     parkList:[],
-    parkIndex:0,
+    parkIndex:999,
     userInfo:{
       userName:'null',
       userGroup:'null'

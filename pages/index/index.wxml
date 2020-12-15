@@ -2,32 +2,15 @@
 <!--顶部沉浸式导航栏-->
 <view class="cu-custom" style="height:{{CustomBar}}px;">
   <view class="cu-bar bg-Primary" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
-    <block wx:if="{{parkList.length>0}}">
-      <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
-        <picker range="{{parkList}}" range-key="ParkName" value="{{parkIndex}}" bindchange="parkChange">
-          <view class="text-lg top-picker-item-view" style="padding-top:{{StatusBar/10*2.75}}px;">
-            <text class="top-picker-text">{{parkList[parkIndex].ParkName}}</text>
-          </view>
-          <view class="top-picker-icon-view" style="padding-top:{{StatusBar/10*4.25}}px;">
-            <text class="cuIcon-unfold"></text>
-          </view>
-        </picker>
-      </view>
-    </block>
-    <block wx:if="{{parkList.length==0}}">
-      <view class="top-picker-view" wx:if="{{PageCur!='user'}}">
-        该用户暂无管理车场
-      </view>
-    </block>
-    <view class="top-title-view text-bold text-{{PageCur!='user'?'right':'left margin-left-sm'}}">
+    <view class="text-lg text-bold text-left margin-left-sm">
     {{PageCur=='control'?'控制中心':(PageCur=='user'?'个人中心':'首页')}}
     </view>
   </view>
 </view>
 <!--内容-->
 <home showReport="{{reportData}}" wx:if="{{PageCur=='home'}}" bind:Fresh="updateReportData"></home>
-<control bind:cameraChange="cameraChange" bind:controlEvent="controlEvent" controlSet="{{controlData}}" wx:if="{{PageCur=='control'}}"></control>
-<user wx:if="{{PageCur=='user'}}" bind:userMenuEvent="userMenuEvent" userData="{{userInfo}}"></user>
+<control bind:cameraChange="cameraChange" bind:NoPlateOutModeChange="NoPlateOutModeChange" bind:controlEvent="controlEvent" controlSet="{{controlData}}" wx:if="{{PageCur=='control'}}"></control>
+<user wx:if="{{PageCur=='user'}}" bind:userMenuEvent="userMenuEvent" userData="{{userData}}"></user>
 <!--底部标签-->
 <view class="cu-bar tabbar bg-white shadow foot">
   <view class="action" bindtap="navChange" data-cur="home">

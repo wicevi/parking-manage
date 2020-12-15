@@ -2350,6 +2350,16 @@ button.icon.lg {
 	overflow: hidden;
 }
 
+/* 记得加宽度 */
+.text-ellipsis{
+	overflow : hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	word-break: break-all; 
+}
+
 /* ==================
          表单
  ==================== */

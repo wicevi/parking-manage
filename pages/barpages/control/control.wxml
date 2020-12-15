@@ -6,30 +6,34 @@
     <text class="text-xl text-bold padding-bottom-xxs">车场实况</text>
   </view>
   <view class="flex-treble"></view>
-  <view class="">
-    <view class="cu-tag line-blue margin-right-xs">
-      <picker range="{{controlSet.cameraList}}" range-key="Name" value="{{controlSet.cameraIndex}}" bindchange="selectCamera">
-        <text>{{controlSet.cameraList[controlSet.cameraIndex].Name}}</text>
-        <text class="cuIcon-unfold"></text>
-      </picker>
+  <block wx:if="{{controlSet.cameraList&&controlSet.cameraList.length!=0}}">
+    <view class="">
+      <view class="cu-tag line-blue margin-right-xs">
+        <picker range="{{controlSet.cameraList}}" range-key="Name" value="{{controlSet.cameraIndex}}" bindchange="selectCamera">
+          <text>{{controlSet.cameraList[controlSet.cameraIndex].Name}}</text>
+          <text class="cuIcon-unfold"></text>
+        </picker>
+      </view>
     </view>
-  </view>
-  <view class="text-sm margin-right text-center">
-    <view class="padding-xs my-btn bg-blue" data-type="link" bindtap="tapEvent">
-      <text>连接</text>
-      <!--attention-->
-      <text class="cuIcon-link padding-left-xs"></text>
+    <view class="text-sm margin-right text-center">
+      <view class="padding-xs my-btn bg-blue" data-type="camera" data-value="{{controlSet.cameraList[controlSet.cameraIndex].ID}}" bindtap="tapEvent">
+        <text>抓拍</text>
+        <text class="cuIcon-camera padding-left-xs"></text>
+      </view>
     </view>
-  </view>
+  </block>
 </view>
 <view class="video-view bg-white shadow">
-  <view class="flex align-center justify-center">
-    <view class="padding-xs">
-      <image class="video-view-tip-img" src="../../../images/unlink.png"></image>
-    </view>
-    <view class="padding-bottom-xs">
-      <text class="text-lg text-red">未连接</text>
-    </view>
+  <view class="flex align-center justify-center {{controlSet.cameraPic?'':'padding'}}">
+    <image class="video-img" src="http://47.103.217.112{{controlSet.cameraPic}}" wx:if="{{controlSet.cameraPic}}"></image>
+    <block wx:if="{{!controlSet.cameraPic}}">
+      <view class="padding-xs">
+        <image class="video-view-tip-img" src="../../../images/unpic.png"></image>
+      </view>
+      <view class="padding-bottom-xs">
+        <text class="text-lg text-red">暂未抓拍</text>
+      </view>
+    </block>
   </view>
 </view>
 <!--车场控制进出 起落闸等-->
@@ -56,41 +60,75 @@
     </view>
     -->
   </view>
-  <view class="daozha-view flex align-center" wx:for="{{controlSet.cameraList}}">
-    <image class="daozha-view-img padding-xs" src="../../../images/{{item.Direction==1?'in':'out'}}.png"></image>
-    <text class="daozha-view-text text-lg text-bold flex-treble">{{item.Name}}</text>
-    <!--
-    <view wx:if="{{item.isHaveBackupOpen}}" class="daozha-view-button padding-xs  my-btn bg-red">应急开闸</view>
-    -->
-    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="open" data-value="{{item.ID}}">开闸</view>
-    <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="close" data-value="{{item.ID}}">关闸</view>
-  </view>
+  <block wx:if="{{controlSet.cameraList}}">
+    <view class="daozha-view flex align-center" wx:for="{{controlSet.cameraList}}">
+      <image class="daozha-view-img padding-xs" src="../../../images/{{item.Direction==1?'in':'out'}}.png"></image>
+      <text class="daozha-view-text text-lg text-bold flex-treble">{{item.Name}}</text>
+      <block wx:if="{{item.Active}}">
+        <!--
+        <view wx:if="{{item.isHaveBackupOpen}}" class="daozha-view-button padding-xs  my-btn bg-red">应急开闸</view>
+        -->
+        <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="open" data-value="{{item.ID}}">开闸</view>
+        <view class="daozha-view-button padding-xs my-btn bg-blue " bindtap="tapEvent" data-type="close" data-value="{{item.ID}}">关闸</view>
+        </block>
+        <block wx:if="{{!item.Active}}">
+          <image style="width:30rpx;height:30rpx;" src="../../../images/unlink.png"></image>
+          <text class="text-red text-bold padding-lr-xs">离线</text>
+        </block>
+    </view>
+  </block>
+  <block wx:if="{{!controlSet.cameraList}}">
+    <view class="daozha-view flex align-center justify-center padding">
+      <text class="text-red">未获取到控制数据，请下拉刷新重新获取</text>
+    </view>
+  </block>
+  <block wx:if="{{controlSet.cameraList&&controlSet.cameraList.length==0}}">
+    <view class="daozha-view flex align-center justify-center padding">
+      <text class="text-red">该车场未添加道闸设备</text>
+    </view>
+  </block>
 </view>
 <!--控制进出-->
 <view class="content-view bg-white shadow">
   <view class="cu-bar bg-white daozha-cu-bar">
     <view class="action">
       <text class="cuIcon-title text-blue"></text>
-      <text>进出限制</text>
+      <text>车场设置</text>
     </view>
   </view>
-  <view class="flex flex-wrap text-center">
+  <view class="flex flex-wrap text-center" wx:if="{{controlSet.parkSet}}">
     <view class="in-out-view basis-df flex align-center">
+      <text class="flex-treble text-bold text-gray">所有车辆禁入</text>
+      <switch class="green radius sm" checked="{{controlSet.parkSet.AllPlate_Forbidden}}" bindchange="tapEvent" data-type="AllPlate_Forbidden" data-value="{{!controlSet.parkSet.AllPlate_Forbidden}}"></switch>
+    </view>
+    <view class="in-out-view basis-df flex align-center" wx:if="{{!controlSet.parkSet.AllPlate_Forbidden}}">
       <text class="flex-treble text-bold text-gray">临时车辆进出</text>
-      <switch class="green radius sm" checked="{{controlSet.tempCarControl}}" bindchange="tapEvent" data-type="tempCarControl" data-value="{{!controlSet.tempCarControl}}"></switch>
+      <switch class="green radius sm" checked="{{controlSet.parkSet.UnknownPlate_IsPermitIn}}" bindchange="tapEvent" data-type="UnknownPlate_IsPermitIn" data-value="{{!controlSet.parkSet.UnknownPlate_IsPermitIn}}"></switch>
     </view>
-    <view class="in-out-view basis-df flex align-center">
-      <text class="flex-treble text-bold text-gray">VIP车辆进出</text>
-      <switch class="green radius sm" checked="{{controlSet.vipCarControl}}" bindchange="tapEvent" data-type="vipCarControl" data-value="{{!controlSet.vipCarControl}}"></switch>
+    <view class="in-out-view basis-df flex align-center" wx:if="{{!controlSet.parkSet.AllPlate_Forbidden}}">
+      <text class="flex-treble text-bold text-gray">无牌车辆进出</text>
+      <switch class="green radius sm" checked="{{controlSet.parkSet.NoPlate_IsPermitIn}}" bindchange="tapEvent" data-type="NoPlate_IsPermitIn" data-value="{{!controlSet.parkSet.NoPlate_IsPermitIn}}"></switch>
     </view>
-    <view class="in-out-view basis-df flex align-center">
-      <text class="flex-treble text-bold text-gray">剩余车位控制</text>
-      <switch class="green radius sm" checked="{{controlSet.parkPlaceControl}}" bindchange="tapEvent" data-type="parkPlaceControl" data-value="{{!controlSet.parkPlaceControl}}"></switch>
-    </view>
-    <view class="in-out-view basis-df flex align-center">
-      <text class="flex-treble text-bold text-gray">剩余车位：{{controlSet.parkPlaceNumber}}</text>
-      <view class="padding-xs my-btn bg-blue" bindtap="tapEvent" data-type="modify" data-value="{{controlSet.parkPlaceNumber}}">修改</view>
+    <view class="in-out-view basis-df flex align-center" wx:if="{{!controlSet.parkSet.AllPlate_Forbidden&&controlSet.parkSet.NoPlate_IsPermitIn}}">
+      <picker class="flex-treble text-bold text-gray" range="{{outMode}}" range-key="name" value="{{controlSet.NoPlate_OutMode_index}}" bindchange="selectNoPlateOutMode">
+        <text>{{outMode[controlSet.NoPlate_OutMode_index].name}}</text>
+        <text class="cuIcon-unfold padding-left-xs"></text>
+      </picker>
+      <view class="padding-tb-xs padding-lr-sm my-btn bg-green" bindtap="tapEvent" data-type="NoPlate_OutMode" data-value="{{outMode[controlSet.NoPlate_OutMode_index].value}}">
+      <text>修改</text>
+      </view>
     </view>
   </view>
+  <block wx:if="{{!controlSet.parkSet}}">
+    <view class="daozha-view flex align-center justify-center padding">
+      <text class="text-red">未获取到控制数据，请下拉刷新重新获取</text>
+    </view>
+  </block>
+</view>
+<!-- 控制进度弹窗 -->
+<view class='cu-load load-modal' wx:if="{{controlSet.isControling}}">
+  <!-- <view class='cuIcon-emojifill text-orange'></view> -->
+  <image src='/images/logo.png' class='png' mode='aspectFit'></image>
+  <view class='gray-text'>加载中...</view>
 </view>
 <view class='cu-tabbar-height'></view>

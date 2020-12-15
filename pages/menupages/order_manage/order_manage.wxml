@@ -2,67 +2,67 @@
 <wxs module="tools" src="../../../utils/tool.wxs"></wxs>
 <!--顶部选择器-->
 <view class="top-select-view bg-white padding-sm shadow">
-  <view class="flex justify-between align-center">
+  <view class="flex align-center">
     <view class="top-select-time-view flex align-center">
       <text class="text-lg padding-bottom-xxs">日期:</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" mode="date" value="{{startDate}}" start="2020-01-01" end="2050-01-01" bindchange="startDateChange">
+      <picker class="padding-lr-xs line-primer3 margin-left-xxs" mode="date" value="{{startDate}}" start="2020-01-01" end="2050-01-01" bindchange="startDateChange">
         <text class="text-bold">{{startDate}}</text>
         <text class="cuIcon-unfold"></text>
       </picker>
       <text class="text-lg padding-bottom-xxs margin-left-xxs">至</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" mode="date" value="{{endDate}}" start="{{startDate}}" end="2050-01-01" bindchange="endDateChange">
+      <picker class="padding-lr-xs line-primer3 margin-left-xxs" mode="date" value="{{endDate}}" start="{{startDate}}" end="2050-01-01" bindchange="endDateChange">
         <text class="text-bold">{{endDate}}</text>
         <text class="cuIcon-unfold"></text>
       </picker>
     </view>
+    <view class="flex-sub"></view>
+    <view class="my-btn bg-blue text-df query-btn" bindtap="queryBtn">查询<text class="cuIcon-search margin-left-xs"></text></view>
+  </view>
+  <view class="flex justify-start align-center padding-top-xs">
     <view class="top-select-type-view flex align-center">
-      <text class="text-lg padding-bottom-xxs">筛选:</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{typeList}}" range-key="title" value="{{typeIndex}}" bindchange="selectChange">
+      <text class="text-lg">筛选:</text>
+      <picker class="padding-lr-xs line-primer3 margin-left-xxs" range="{{typeList}}" range-key="title" value="{{typeIndex}}" bindchange="selectChange">
         <text class="text-bold">{{typeList[typeIndex].title}}</text>
         <text class="cuIcon-unfold"></text>
       </picker>
     </view>
-  </view>
-  <view class="flex justify-between align-center padding-top-sm">
-    <view class="top-select-type-view flex align-center">
-      <text class="text-lg padding-bottom-xxs">车场:</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{parkList}}" range-key="ParkName" value="{{parkIndex}}" bindchange="parkChange">
-        <view class="flex align-center">
-          <text class="ellipsis-view text-bold">{{parkList[parkIndex].ParkName}}</text>
-          <text class="cuIcon-unfold"></text>
-        </view>
-      </picker>
-    </view>
-    <view class="top-select-type-view flex align-center">
-      <text class="text-lg padding-bottom-xxs">排序:</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{sortList}}" range-key="title" value="{{sortIndex}}" bindchange="sortChange">
+    <view class="top-select-type-view flex align-center margin-left">
+      <text class="text-lg ">排序:</text>
+      <picker class="padding-lr-xs line-primer3 margin-left-xxs" range="{{sortList}}" range-key="title" value="{{sortIndex}}" bindchange="sortChange">
         <text class="text-bold">{{sortList[sortIndex].title}}</text>
         <text class="cuIcon-unfold"></text>
       </picker>
     </view>
   </view>
 </view>
+<!--订单列表为空-->
+<view class="margin align-center flex" wx:if="{{!OrderList||OrderList.length==0}}">
+  <view class="flex-sub"></view>
+  <image src="/images/sad.png" style="width:60rpx;height:60rpx;"></image>
+  <text class="text-bold text-xl margin-left-xs">没有找到订单</text>
+  <view class="flex-sub"></view>
+</view>
 <!--详细订单列表-->
-<view class="order-info-view margin-lr margin-tb-sm padding-sm bg-white shadow text-lg" wx:for="{{briefOrder}}" data-index="{{index}}" bindtap="tapOrder">
+<view class="order-info-view margin-lr margin-tb-sm padding-sm bg-white shadow text-lg" wx:for="{{OrderList}}" data-index="{{index}}" bindtap="tapOrder">
   <view class="order-info-item flex">
     <view class="flex-twice flex align-center">
       <text class="padding-bottom-xxs">车牌号:</text>
-      <view class="cu-tag bg-Plate margin-left-xs">{{tools.strToPlate(item.plate)}}</view>
-      <text class="padding-bottom-xxs margin-left-xs text-gray">({{item.type}})</text>
+      <view class="cu-tag bg-Plate margin-left-xs">{{tools.strToPlate(item.Plate)}}</view>
+      <text class="padding-bottom-xxs margin-left-xs text-gray">(临时)</text>
     </view>
     <view class="flex-sub flex align-center">
       <text class="padding-bottom-xxs">状态:</text>
-      <view class="cu-tag radius bg-{{item.state=='已结算'?'green':'red'}} margin-left-xs">{{item.state}}</view>
+      <view class="cu-tag radius bg-{{tools.strlen(item.PayTime)>10?'green':'red'}} margin-left-xs">{{tools.strlen(item.PayTime)>10?'已结算':'未结算'}}</view>
     </view>
   </view>
   <view class="order-info-item">
-    <text>创建时间:</text>
-    <text class="margin-left-xs text-bold">{{item.createTime}}</text>
+    <text>进场时间:</text>
+    <text class="margin-left-xs text-bold">{{item.InTime}}</text>
   </view>
   <view class="order-info-item">
-    <text>结算时间:</text>
-    <text wx:if="{{tools.strlen(item.finishTime)>10}}" class="margin-left-xs text-bold">{{item.finishTime}}</text>
-    <text wx:if="{{tools.strlen(item.finishTime)<=10}}" class="margin-left-xs text-bold">暂未离场</text>
+    <text>出场时间:</text>
+    <text wx:if="{{tools.strlen(item.PayTime)>10}}" class="margin-left-xs text-bold">{{item.PayTime}}</text>
+    <text wx:if="{{tools.strlen(item.PayTime)<=10}}" class="margin-left-xs text-bold">暂未离场</text>
   </view>
 </view>
 <!-- 添加按钮 -->
@@ -83,60 +83,54 @@
       <view class="order-info-item flex align-center">
         <view class="flex-twice flex align-center">
           <text class="padding-bottom-xxs">订单车牌:</text>
-          <view class="cu-tag bg-Plate margin-left-xs">{{tools.strToPlate(briefOrder[orderIndex].plate)}}</view>
-          <text class="padding-bottom-xxs margin-left-xs text-gray">({{briefOrder[orderIndex].type}})</text>
+          <view class="cu-tag bg-Plate margin-left-xs">{{tools.strToPlate(OrderList[orderIndex].Plate)}}</view>
+          <text class="padding-bottom-xxs margin-left-xs text-gray">(临时)</text>
         </view>   
         <view class="flex-sub flex align-center justify-end">
           <text class="padding-bottom-xxs">状态:</text>
-          <view class="cu-tag radius bg-{{briefOrder[orderIndex].state=='已结算'?'green':'red'}} margin-left-xs">{{briefOrder[orderIndex].state}}</view>
+          <view class="cu-tag radius bg-{{tools.strlen(OrderList[orderIndex].PayTime)>10?'green':'red'}} margin-left-xs">{{tools.strlen(OrderList[orderIndex].PayTime)>10?'已结算':'未结算'}}</view>
         </view>
       </view>
-      <!-- 进场时间和图片 -->
+      <!-- 结算时间 -->
+      <view class="order-info-item flex align-center" wx:if="{{tools.strlen(OrderList[orderIndex].PayTime)>10}}">
+        <text class="padding-bottom-xxs">结算时间:</text>
+        <text class="margin-left-xs text-bold">{{OrderList[orderIndex].PayTime}}</text>
+      </view>
+      <!-- 进场时间 -->
       <view class="order-info-item flex align-center">
         <text class="padding-bottom-xxs">进场时间:</text>
-        <text class="margin-left-xs text-bold">{{briefOrder[orderIndex].createTime}}</text>
-        <view class="flex-sub flex align-center justify-end">
-          <!-- <view class="padding-xs my-btn bg-blue text-sm" bindtap="viewImage" data-url="{{briefOrder[orderIndex].inPic}}" wx:if="{{tools.strlen(briefOrder[orderIndex].inPic)>10}}">
-            <text>进场照片</text>
-            <text class="cuIcon-attention padding-left-xs"></text>
-          </view> -->
-          <view class="padding-xs my-btn bg-blue text-sm" bindtap="tapInPhoto" wx:if="{{tools.strlen(briefOrder[orderIndex].inPic)<=10}}">
-            <text>无进场照片</text>
-          </view>
+        <text class="margin-left-xs text-bold">{{OrderList[orderIndex].InTime}}</text>
+      </view>
+      <!-- 进场图片 -->
+      <view class="order-info-item flex align-center">
+        <text>进场照片:</text>
+        <view class="flex-treble text-center" bindtap="viewImage" data-url="{{OrderList[orderIndex].inPic}}" wx:if="{{tools.strlen(OrderList[orderIndex].inPic)>10}}">
+          <image style="width:432rpx;height:243rpx;" src="{{OrderList[orderIndex].inPic}}"></image>
         </view>
+        <text class="margin-left-xs text-bold text-gray" wx:if="{{tools.strlen(OrderList[orderIndex].inPic)<=10}}">无进场照片</text>
       </view>
-      <view class="order-info-item text-center" wx:if="{{tools.strlen(briefOrder[orderIndex].inPic)>10}}" bindtap="viewImage" data-url="{{briefOrder[orderIndex].inPic}}">
-        <image style="width:576rpx;height:324rpx;" src="{{briefOrder[orderIndex].inPic}}"></image>
-      </view>
-      <!-- 出场时间和图片 -->
+      <!-- 出场时间 -->
       <view class="order-info-item flex align-center">
         <text  class="padding-bottom-xxs">离场时间:</text>
-        <text wx:if="{{tools.strlen(briefOrder[orderIndex].finishTime)>10}}" class="margin-left-xs text-bold">{{briefOrder[orderIndex].finishTime}}</text>
-        <text wx:if="{{tools.strlen(briefOrder[orderIndex].finishTime)<=10}}" class="padding-bottom-xxs margin-left-xs text-bold">暂未离场</text>
-        <view class="flex-sub flex align-center justify-end" wx:if="{{tools.strlen(briefOrder[orderIndex].finishTime)>10}}">
-          <!-- <view class="padding-xs my-btn bg-blue text-sm" bindtap="viewImage" data-url="{{briefOrder[orderIndex].outPic}}" wx:if="{{tools.strlen(briefOrder[orderIndex].outPic)>10}}">
-            <text>离场照片</text>
-            <text class="cuIcon-attention padding-left-xs"></text>
-          </view> -->
-          <view class="padding-xs my-btn bg-blue text-sm" wx:if="{{tools.strlen(briefOrder[orderIndex].outPic)<=10}}">
-            <text>无离场照片</text>
-          </view>
-        </view>
+        <text wx:if="{{tools.strlen(OrderList[orderIndex].OutTime)>10}}" class="margin-left-xs text-bold">{{OrderList[orderIndex].PayTime}}</text>
+        <text wx:if="{{tools.strlen(OrderList[orderIndex].OutTime)<=10}}" class="padding-bottom-xxs margin-left-xs text-bold">暂未离场</text>
       </view>
-      <view class="order-info-item text-center" wx:if="{{tools.strlen(briefOrder[orderIndex].outPic)>10}}" bindtap="viewImage" data-url="{{briefOrder[orderIndex].outPic}}">
-        <image style="width:576rpx;height:324rpx;" src="{{briefOrder[orderIndex].outPic}}"></image>
+       <!-- 出场图片 -->
+      <view class="order-info-item flex align-center">
+        <text>离场照片:</text>
+        <view class="flex-treble text-center" bindtap="viewImage" data-url="{{OrderList[orderIndex].outPic}}" wx:if="{{tools.strlen(OrderList[orderIndex].outPic)>10}}">
+          <image style="width:432rpx;height:243rpx;" src="{{OrderList[orderIndex].outPic}}"></image>
+        </view>
+        <text class="margin-left-xs text-bold text-gray" wx:if="{{tools.strlen(OrderList[orderIndex].outPic)<=10}}">无离场照片</text>
       </view>
       <!-- 停车时长和价格 -->
       <view class="order-info-item flex align-center">
         <text>停车时长:</text>
-        <text class="margin-lr-xs text-xxl text-bold text-orange">{{tools.toFix_0(briefOrder[orderIndex].parkingHours/3600)}}</text>
-        <text>小时</text>
-        <text class="margin-lr-xs text-xxl text-bold text-orange">{{tools.toFix_0(briefOrder[orderIndex].parkingHours%3600/60)}}</text>
-        <text>分钟</text>
-        <view class="flex-sub flex align-center justify-end">
-          <text>车费:</text>
-          <text class="margin-lr-xs text-price text-xxl text-red text-bold">{{tools.toFix_2(briefOrder[orderIndex].parkingFee/100)}}</text>
-        </view>
+        <text class="padding-bottom-xs margin-lr-xs text-xl text-orange text-bold">{{OrderList[orderIndex].StayTime}}</text>
+      </view>
+      <view class="order-info-item flex align-center justify-start">
+        <text>停车费用:</text>
+        <text class="margin-lr-xs text-price text-xxl text-red text-bold">{{tools.toFix_2(OrderList[orderIndex].Price/100)}}</text>
       </view>
     </view>
     <view class="cu-bar bg-white justify-end">
@@ -210,4 +204,10 @@
       </view>
     </view>
   </view>
+</view>
+<!-- 加载进度弹窗 -->
+<view class='cu-load load-modal' wx:if="{{isLoading}}">
+  <!-- <view class='cuIcon-emojifill text-orange'></view> -->
+  <image src='/images/logo.png' class='png' mode='aspectFit'></image>
+  <view class='gray-text'>加载数据中...</view>
 </view>

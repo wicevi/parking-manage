@@ -1,4 +1,11 @@
 /* pages/menupages/fee_adjust/fee_adjust.wxss */
+.top-select-view{
+  font-size: 1.2em;
+  color: black;
+}
+.set-free-btn{
+  padding: 6rpx 10rpx 8rpx;
+}
 .fee-view{
   border-radius: 16rpx;
 }

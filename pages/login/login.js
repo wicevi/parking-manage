@@ -128,10 +128,20 @@ Page({
           wx.navigateBack({
             delta: 0,
           })
+        }else{
+          wx.showModal({
+            title: '登录失败',
+            content: res.data.Message,
+            showCancel:false
+          })
         }
       },
       fail:function(res){
         console.log(res);
+        wx.showToast({
+          title: '连接服务器异常',
+          image:'/images/error.png'
+        })
       },
       complete:function(res){
         this_.setData({

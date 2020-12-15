@@ -1,4 +1,11 @@
 /* pages/menupages/order_manage/order_manage.wxss */
+.top-select-view{
+  font-size: 1.2em;
+  color: black;
+}
+.query-btn{
+  padding: 6rpx 10rpx 8rpx;
+}
 .order-info-view{
   border-radius: 16rpx;
 }

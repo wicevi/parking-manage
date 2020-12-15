@@ -1,23 +1,16 @@
 <!--pages/menupages/fee_adjust/fee_adjust.wxml-->
-<!--顶部选择栏-->
+<!--顶部选择器-->
 <view class="top-select-view bg-white padding-sm shadow">
-  <view class="flex justify-between align-center">
-    <view class="top-select-type-view flex align-center">
-      <text class="text-lg padding-bottom-xxs">车场:</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{parkList}}" range-key="ParkName" value="{{parkIndex}}" bindchange="parkChange">
-        <view class="flex align-center">
-          <text class="ellipsis-view text-bold">{{parkList[parkIndex].ParkName}}</text>
-          <text class="cuIcon-unfold"></text>
-        </view>
-      </picker>
-    </view>
-    <view class="top-select-type-view flex align-center">
-      <text class="text-lg padding-bottom-xxs">默认:</text>
-      <picker class="cu-tag line-primer3 radius margin-left-xxs" range="{{feeList}}" range-key="feeName" value="{{feeIndex}}" bindchange="feeChange">
+  <view class="flex align-center">
+    <view class="top-select-time-view flex align-center">
+      <text class="text-lg">当前:</text>
+      <picker class="padding-lr-xs line-primer3 margin-left-xxs" range="{{feeList}}" range-key="feeName" value="{{feeIndex}}" bindchange="feeChange">
         <text class="text-bold">{{feeList[feeIndex].feeName}}</text>
         <text class="cuIcon-unfold"></text>
       </picker>
     </view>
+    <view class="flex-sub"></view>
+    <view class="my-btn bg-blue text-df set-free-btn" bindtap="queryBtn">更改<text class="cuIcon-settings margin-left-xs"></text></view>
   </view>
 </view>
 <!--策略列表-->

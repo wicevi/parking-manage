@@ -5,10 +5,12 @@ var tools = {
   toFix_2: function (value) {       
       return value.toFixed(2) 
   },
-  strlen: function(value) {    
+  strlen: function(value) {   
+    if(value==null)return 0; 
     return value.length
   },
-  strToPlate: function(value) {    
+  strToPlate: function(value) {  
+    if(value==null)return null;   
     var len=value.length;
     var reStr="";
     for(var i=0;i<len;i++){

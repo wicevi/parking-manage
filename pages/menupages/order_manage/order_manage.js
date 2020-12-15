@@ -1,6 +1,7 @@
 // pages/menupages/order_manage/order_manage.js
 //获取应用实例
 const app = getApp();
+var util = require('../../../utils/util.js');
 Page({
   data: {
     //筛选类别
@@ -19,50 +20,26 @@ Page({
       }
     ],
     typeIndex:0,
-    //车场列表
-    parkList:app.globalData.parkList,
-    parkIndex:app.globalData.parkIndex,
     //排序类别
     sortList:[
       {
-        title:"创建时间",
+        title:"进场时间",
         type:0
       },
       {
-        title:"结算时间",
+        title:"离场时间",
         type:1
       },
     ],
     sortIndex:0,
     //时间范围
-    startDate:"2020-11-17",
-    endDate:"2020-11-17",
-    //订单缩影
-    briefOrder:[
-      {
-        plate:"闽C82T66",
-        type:"临时",
-        state:"已结算",
-        createTime:"2020-11-17 09:10:36",
-        inPic:"https://tse4-mm.cn.bing.net/th/id/OIP.4T26wqsKhx41jEteRT2e-QHaEK?pid=Api&rs=1",
-        finishTime:"2020-11-17 12:14:21",
-        outPic:"http://img-download.pchome.net/download/1k0/e5/48/o2qfcm-1dgf.jpg",
-        parkingHours:38000,//停车时长
-        parkingFee:4300//停车费用
-      },
-      {
-        plate:"京A88888",
-        type:"VIP",
-        state:"未结算",
-        createTime:"2020-11-17 08:15:32",
-        inPic:"http://www.3dmgame.com/uploads/allimg/140912/226_140912090811_2.jpg",
-        finishTime:"",
-        outPic:"",
-        parkingHours:8600,//停车时长
-        parkingFee:1000//停车费用
-      },
-    ],
+    startDate:util.getDate(),
+    endDate:util.getDate(),
+    //订单数组
+    OrderList:null,
     orderIndex:0,
+    //是否正在加载
+    isLoading:false,
     //弹窗变量
     isOpenModal_info:false,
     isOpenModal_add:false,
@@ -116,14 +93,6 @@ Page({
       typeIndex: this.data.typeIndex
     })
   },
-  //车场切换事件
-  parkChange(e) {
-    console.log("orderManage[parkChange:"+e.detail.value+"]");
-    app.globalData.parkIndex = e.detail.value;
-    this.setData({
-      parkIndex: app.globalData.parkIndex
-    })
-  },
   //排序切换事件
   sortChange(e) {
     console.log("orderManage[sortChange:"+e.detail.value+"]");
@@ -164,11 +133,62 @@ Page({
       isOpenModal_add: false
     });
   },
+  //查询按钮
+  queryBtn:function(e){
+    if(!this.data.isLoading){
+      this.loadOrder();
+    }
+  },
+  //加载订单
+  loadOrder:function(e){
+    var this_=this;
+    if(app.globalData.parkList&&app.globalData.parkIndex<app.globalData.parkList.length){
+      this_.setData({isLoading:true});
+      wx.request({
+        url: app.HOST+app.URLS.query_orders,
+        header:app.requestHeader,
+        data:{
+          ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
+          StartTime:this_.data.startDate,
+          EndTime:this_.data.endDate
+        },
+        success:function(res){
+          console.log(res);
+          if(res.data.Code=="success"){
+            this_.setData({OrderList:res.data.Result});
+            wx.showToast({
+              title: '加载成功',
+              image:'/images/success.png'
+            })
+          }else{
+            console.log( '加载订单异常：'+res.data.Message);
+            wx.showToast({
+              title: '加载订单异常',
+              image:'/images/error.png'
+            })
+          }
+        },
+        fail:function(e){
+          wx.showToast({
+            title: '连接服务器异常',
+            image:'/images/error.png'
+          })
+        },
+        complete:function(res){
+          this_.setData({isLoading:false});
+        },
+      })
+    }else{
+      wx.showToast({
+        title: '车场异常',
+        image:'/images/error.png'
+      })
+    }
+  },
   //切到前台
   onShow:function(){
-    this.setData({
-      parkList:app.globalData.parkList,
-      parkIndex: app.globalData.parkIndex
-    })
+    if(!this.data.OrderList||this.data.OrderList.length==0){
+      this.loadOrder();
+    }
   }
 })

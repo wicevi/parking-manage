@@ -5,58 +5,136 @@
     <image class="cu-avatar xl round padding-sm bg-white" src="../../../images/logo.png"></image>
   </view>
   <view class="app-name-view">
-    <text class="text-xl text-bold">滴滴停车管理系统</text>
+    <text class="text-bold">滴滴停车管理系统</text>
   </view>
-  <view class="usr-name-view">
-    <text class="text-lg">当前账号：{{userData.userName}} ({{userData.userGroup}})</text>
+  <view class="usr-name-view flex align-center" data-type="logout" bindtap="tapEvent">
+    <image src="/images/user.png" style="width:40rpx;height:40rpx;"></image>
+    <text class="margin-lr-xs">账号</text>
+    <view class="flex flex-twice text-bold justify-center">
+      <text class="text-ellipsis">{{userData.userInfo.userName}}</text>
+      <text class="margin-left-xs">({{userData.userInfo.userGroup}})</text>
+    </view>
+  </view>
+  <view class="usr-name-view flex align-center" data-type="changepark" bindtap="tapEvent">
+    <image src="/images/park.png" style="width:40rpx;height:40rpx;"></image>
+    <text class="margin-lr-xs">车场</text>
+    <view class="flex flex-twice text-bold justify-center">
+      <text class="text-ellipsis">{{userData.parkList[userData.parkIndex].ParkName}}</text>
+    </view>
   </view>
 </view>
 <!--菜单-->
 <view class="cu-list menu card-menu shadow-lg radius">
+  <view class="cu-item arrow" data-type="changepark" bindtap="tapEvent">
+    <button class="cu-btn content">
+      <image src="/images/changepark.png" class="user-menu-img"></image>
+      <text class="text-grey padding-left-xs">切换车场</text>
+    </button>
+  </view>
   <view class="cu-item arrow">
     <button class="cu-btn content" data-type="logout" bindtap="tapEvent">
-      <text class="cuIcon-forward text-red"></text>
-      <text class="text-grey">退出登录</text>
+      <image src="/images/logout.png" class="user-menu-img"></image>
+      <text class="text-grey padding-left-xs">退出登录</text>
     </button>
   </view>
   <view class="cu-item arrow">
     <button class="cu-btn content" data-type="changepw" bindtap="tapEvent">
-      <text class="cuIcon-refresh text-orange"></text>
-      <text class="text-grey">更改密码</text>
-    </button>
-  </view>
-  <view class="cu-item arrow" data-type="addpark" bindtap="tapEvent">
-    <button class="cu-btn content">
-      <text class="cuIcon-add text-purple"></text>
-      <text class="text-grey">添加车场</text>
-    </button>
-  </view>
-  <view class="cu-item arrow" data-type="add_magane_user" bindtap="tapEvent">
-    <button class="cu-btn content">
-      <text class="cuIcon-friendadd text-pink"></text>
-      <text class="text-grey">新建/管理账户</text>
-    </button>
-  </view>
-  <view class="cu-item arrow" data-type="add_magane_park" bindtap="tapEvent">
-    <button class="cu-btn content">
-      <text class="cuIcon-cascades text-brown"></text>
-      <text class="text-grey">新建/管理车场</text>
+      <image src="/images/changepw.png" class="user-menu-img"></image>
+      <text class="text-grey padding-left-xs">更改密码</text>
     </button>
   </view>
   <view class="cu-item arrow" data-type="feedback" bindtap="tapEvent">
     <button class="cu-btn content">
-      <text class="cuIcon-write text-green"></text>
-      <text class="text-grey">意见反馈</text>
+      <image src="/images/feedback.png" class="user-menu-img"></image>
+      <text class="text-grey padding-left-xs">意见反馈</text>
     </button>
   </view>
   <view class="cu-item arrow" data-type="about" bindtap="tapEvent">
     <button class="cu-btn content">
-      <text class="cuIcon-info text-cyan"></text>
-      <text class="text-grey">关于我们</text>
+      <image src="/images/about.png" class="user-menu-img"></image>
+      <text class="text-grey padding-left-xs">关于我们</text>
     </button>
   </view>
 </view>
 <view class="cu-tabbar-height"></view>
+<!-- 修改密码弹窗 -->
+<view class="cu-modal {{isOpenModal_changepw?'show':''}}">
+  <view class="cu-dialog text-lg">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold text-xl">更改账户密码</view>
+      <view class="action" bindtap="closeModal_changepw">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-tb flex justify-center">
+      <image style="width:80rpx;height:80rpx;" src="/images/changepw.png"></image>
+    </view>
+    <view class="flex align-center changepw-input">
+      <view class="padding-lr-xs">旧密码</view>
+      <view class="flex-twice padding-left-sm text-left">
+        <input type="text" value="{{old_pw}}" bindinput="old_pw_change" focus="{{isOpenModal_changepw}}"/>
+      </view>
+      <view class="padding-lr-xs" bindtap="clear_old_pw" wx:if="{{old_pw}}">
+        <text class="cuIcon-close"></text>
+      </view>
+    </view>
+    <view class="flex align-center changepw-input">
+      <view class="padding-lr-xs">新密码</view>
+      <view class="flex-twice padding-left-sm text-left">
+        <input type="text" value="{{new_pw}}" bindinput="new_pw_change"/>
+      </view>
+      <view class="padding-lr-xs" bindtap="clear_new_pw" wx:if="{{new_pw}}">
+        <text class="cuIcon-close"></text>
+      </view>
+    </view>
+    <view class="err-info-view" wx:if="{{err_info}}">
+      {{err_info}}
+    </view>
+    <view class="padding-tb"></view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <view class="margin-left padding-xs padding-lr my-btn bg-red round" bindtap="changePassword">
+          <text>确认更改</text>
+        </view>
+        <view class="margin-left padding-xs padding-lr my-btn bg-grey round" bindtap="closeModal_changepw">
+          <text>关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<!-- 更改车场弹窗 -->
+<view class="cu-modal {{isOpenModal_changepark?'show':''}}">
+  <view class="cu-dialog text-lg">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold text-xl">切换管理车场</view>
+      <view class="action" bindtap="closeModal_changepark">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-tb flex justify-center">
+      <image style="width:80rpx;height:80rpx;" src="/images/changepark.png"></image>
+    </view>
+    <block wx:for="{{userData.parkList}}" wx:for-index="idx">
+      <view class="flex align-center changepw-input{{idx==select_park_index?'-select':''}}" >
+        <view class="flex-twice padding-left-xs text-center text-ellipsis" data-value="{{idx}}" bindtap="selectPark">
+          {{item.ParkName}}
+        </view>
+      </view>
+    </block>
+    <view class="padding-tb"></view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <view class="margin-left padding-xs padding-lr my-btn bg-red round" bindtap="changePark">
+          <text>确认切换</text>
+        </view>
+        <view class="margin-left padding-xs padding-lr my-btn bg-grey round" bindtap="closeModal_changepark">
+          <text>关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
 
 
 

@@ -71,7 +71,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var feeData=JSON.parse(options.data);
+    var feeData=options.data==null?null:JSON.parse(options.data);
     if(feeData!=null){
       if(feeData.dayMaxFee>0)this.data.isMaxFee=true;
       if(feeData.allNightPrice>0){

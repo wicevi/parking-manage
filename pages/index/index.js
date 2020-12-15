@@ -4,12 +4,11 @@ const app = getApp();
 var util = require('../../utils/util.js');
 Page({
   data: {
-    loginSuccess:false,
+    //自定义顶部导航栏相关
     StatusBar: app.globalData.StatusBar,
     CustomBar: app.globalData.CustomBar,
     Custom: app.globalData.Custom,
-    parkList: app.globalData.parkList,
-    parkIndex: app.globalData.parkIndex,
+    //底部导航栏相关
     PageCur: 'home',
     //home页报表数据
     reportData:{
@@ -20,109 +19,43 @@ Page({
     //control页数据
     controlData:{
       cameraList:[],
+      cameraPic:null,
       cameraIndex:0,
-      isOpenMonitor:false,
-      vipCarControl:true,
-      tempCarControl:true,
-      parkPlaceControl:false,
-      parkPlaceNumber:999
+      parkSet:null,
+      NoPlate_OutMode_index:0,
+      isControling:false
     },
-    userInfo:app.globalData.userInfo,
+    //user页数据
+    userData:{
+      userInfo:app.globalData.userInfo,
+      parkList: app.globalData.parkList,
+      parkIndex: app.globalData.parkIndex,
+    },
+    //是否登录成功返回
+    loginSuccess:false,
   },
-  //顶部车场切换事件
-  parkChange(e) {
-    app.globalData.parkIndex = e.detail.value;
-    this.setData({
-      parkIndex: app.globalData.parkIndex
-    })
+  //车场切换事件
+  parkChange(parkIndex) {
+    var this_=this;
+    var timer1=null;
+    app.globalData.parkIndex = parkIndex;
+    this_.setData({
+      userData: app.globalData
+    });
+    //开始加载新数据
+    this_.updateReportData();
+    this_.queryControlData();
+    //存储最新选择的车场索引
+    wx.setStorage({
+      data: parkIndex,
+      key: 'ParkIndex',
+    });
   },
   //底部标签点击事件
   navChange(e) {
     this.setData({
       PageCur: e.currentTarget.dataset.cur
     })
-  },
-  //获取摄像头列表数据
-  queryPoint(e){
-    var this_=this;
-    if(app.globalData.parkList&&app.globalData.parkIndex<app.globalData.parkList.length){
-      wx.request({
-        url: app.HOST+app.URLS.query_point,
-        header:app.requestHeader,
-        data:{
-          ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
-        },
-        success:function(res){
-          console.log(res);
-          if(res.data.Code=="success"){
-            this_.data.controlData.cameraList=res.data.Result;
-          }else{
-            console.log( '加载摄像头异常：'+res.data.Message);
-            wx.showToast({
-              title: '加载摄像头数据异常',
-              image:'/images/error.png'
-            })
-          }
-        },
-        fail:function(e){
-          wx.showToast({
-            title: '连接服务器异常',
-            image:'/images/error.png'
-          })
-        },
-        complete:function(res){
-          this_.setData({
-            controlData:this_.data.controlData
-          })
-        }
-      })
-    }else{
-      wx.showToast({
-        title: '车场异常',
-        image:'/images/error.png'
-      })
-    }
-  },
-  //控制道闸
-  controlDaozha(e){
-    var this_=this;
-    if(app.globalData.parkList&&app.globalData.parkIndex<app.globalData.parkList.length){
-      wx.request({
-        url: app.HOST+app.URLS.opengate,
-        method:"POST",
-        header:app.requestHeader,
-        data:{
-          ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
-          PointID:e.ID
-        },
-        success:function(res){
-          console.log(res);
-          if(res.data.Code=="success"){
-            wx.showToast({
-              title: '控制道闸成功',
-              image:'/images/success.png'
-            })
-          }else{
-            console.log( '控制道闸异常：'+res.data.Message);
-            wx.showToast({
-              title: '控制道闸异常',
-              image:'/images/error.png'
-            })
-          }
-        },
-        fail:function(e){
-          wx.showToast({
-            title: '连接服务器异常',
-            image:'/images/error.png'
-          })
-        },
-      })
-    }else{
-      wx.showToast({
-        title: '车场异常',
-        image:'/images/error.png'
-      })
-    }
   },
   //更新本日报表事件
   updateReportData(e) {
@@ -138,7 +71,7 @@ Page({
         header:app.requestHeader,
         data:{
           ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
-          StartTime:util.getData(),
+          StartTime:util.getDate(),
           Unit:"day"
         },
         success:function(res){
@@ -150,6 +83,7 @@ Page({
           }
         },
         fail:function(e){
+          this_.data.reportData.err_info='连接服务器异常';
           wx.showToast({
             title: '连接服务器异常',
             image:'/images/error.png'
@@ -169,9 +103,247 @@ Page({
       })
     }
   },
+  //获取控制界面数据
+  queryControlData(e){
+    var this_=this;
+    var data_={ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,};
+    if(app.globalData.parkList&&app.globalData.parkIndex<app. globalData.parkList.length){
+      this_.data.controlData.isControling=true;
+      this_.setData({controlData:this_.data.controlData});
+      //获取摄像头列表
+      wx.request({
+        url: app.HOST+app.URLS.query_point,
+        header:app.requestHeader,
+        data:data_,
+        success:function(res){
+          console.log(res);
+          if(res.data.Code=="success"){
+            this_.data.controlData.cameraList=res.data.Result;
+            //获取车场配置
+            wx.request({
+              url: app.HOST+app.URLS.query_parksets,
+              header:app.requestHeader,
+              data:data_,
+              success:function(res){
+                console.log(res);
+                if(res.data.Code=="success"){
+                  this_.data.controlData.parkSet=res.data.Result;
+                  if(this_.data.controlData.parkSet.NoPlate_OutMode=="minprice")this_.data.controlData.NoPlate_OutMode_index=1;
+                  else if(this_.data.controlData.parkSet.NoPlate_OutMode=="manual")this_.data.controlData.NoPlate_OutMode_index=2;
+                  else this_.data.controlData.NoPlate_OutMode_index=0;
+                  wx.showToast({
+                    title: '获取数据成功',
+                    image:'/images/success.png'
+                  })
+                }else{
+                  wx.showModal({
+                    title: '获取数据失败',
+                    content: res.data.Message,
+                    showCancel:false
+                  })
+                }
+              },
+              fail:function(e){
+                wx.showToast({
+                  title: '连接服务器异常',
+                  image:'/images/error.png'
+                })
+              },
+              complete:function(res){
+                this_.data.controlData.isControling=false;
+                this_.setData({controlData:this_.data.controlData});
+              }
+            })
+          }else{
+            wx.showModal({
+              title: '获取数据失败',
+              content: res.data.Message,
+              showCancel:false
+            })
+            this_.data.controlData.isControling=false;
+            this_.setData({controlData:this_.data.controlData});
+          }
+        },
+        fail:function(e){
+          wx.showToast({
+            title: '连接服务器异常',
+            image:'/images/error.png'
+          })
+          this_.data.controlData.isControling=false;
+          this_.setData({controlData:this_.data.controlData});
+        },
+      })
+    }else{
+      wx.showToast({
+        title: '车场异常',
+        image:'/images/error.png'
+      })
+    }
+  },
+  //控制道闸
+  controlDaozha(e){
+    var this_=this;
+    if(app.globalData.parkList&&app.globalData.parkIndex<app.globalData.parkList.length){
+      this_.data.controlData.isControling=true;
+      this_.setData({controlData:this_.data.controlData});
+      wx.request({
+        url: app.HOST+app.URLS.opengate,
+        method:"POST",
+        header:app.requestHeader,
+        data:{
+          ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
+          PointID:e.ID
+        },
+        success:function(res){
+          console.log(res);
+          if(res.data.Code=="success"){
+            wx.showToast({
+              title: '控制道闸成功',
+              image:'/images/success.png'
+            })
+          }else{
+            wx.showModal({
+              title: '控制道闸失败',
+              content: res.data.Message,
+              showCancel:false
+            })
+          }
+        },
+        fail:function(e){
+          wx.showToast({
+            title: '连接服务器异常',
+            image:'/images/error.png'
+          })
+        },
+        complete:function(res){
+          this_.data.controlData.isControling=false;
+          this_.setData({
+            controlData:this_.data.controlData
+          })
+        }
+      })
+    }else{
+      wx.showToast({
+        title: '车场异常',
+        image:'/images/error.png'
+      })
+    }
+  },
+  //车场配置改变
+  changeParkSet(paramName,paramValue){
+    var this_=this;
+    var data_={
+      ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
+    }
+    data_[paramName]=paramValue;
+    if(app.globalData.parkList&&app.globalData.parkIndex<app.globalData.parkList.length){
+      this_.data.controlData.isControling=true;
+      this_.setData({controlData:this_.data.controlData});
+      wx.request({
+        url: app.HOST+app.URLS.change_parkset,
+        header:app.requestHeader,
+        method:"POST",
+        data:data_,
+        success:function(res){
+          console.log(res);
+          if(res.data.Code=="success"){
+            this_.data.controlData.parkSet[paramName]=paramValue;
+            if(this_.data.controlData.parkSet.NoPlate_OutMode=="minprice")this_.data.controlData.NoPlate_OutMode_index=1;
+            else if(this_.data.controlData.parkSet.NoPlate_OutMode=="manual")this_.data.controlData.NoPlate_OutMode_index=2;
+            else this_.data.controlData.NoPlate_OutMode_index=0;
+            wx.showToast({
+              title: '更改设置成功',
+              image:'/images/success.png'
+            })
+          }else{
+            wx.showModal({
+              title: '更改设置失败',
+              content: res.data.Message,
+              showCancel:false
+            })
+          }
+        },
+        fail:function(e){
+          wx.showToast({
+            title: '连接服务器异常',
+            image:'/images/error.png'
+          })
+        },
+        complete:function(res){
+          this_.data.controlData.isControling=false;
+          this_.setData({
+            controlData:this_.data.controlData
+          })
+        }
+      })
+    }else{
+      wx.showToast({
+        title: '车场异常',
+        image:'/images/error.png'
+      })
+    }
+  },
+  //摄像头抓拍
+  capturePic(pointID){
+    var this_=this;
+    var data_={
+      ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
+      PointID:pointID,
+    }
+    if(app.globalData.parkList&&app.globalData.parkIndex<app.globalData.parkList.length){
+      this_.data.controlData.isControling=true;
+      this_.setData({controlData:this_.data.controlData});
+      wx.request({
+        url: app.HOST+app.URLS.snapimage,
+        header:app.requestHeader,
+        method:"POST",
+        data:data_,
+        success:function(res){
+          console.log(res);
+          if(res.data.Code=="success"){
+            this_.data.controlData.cameraPic=res.data.Result.Image
+            wx.showToast({
+              title: '抓拍成功',
+              image:'/images/success.png'
+            })
+          }else{
+            wx.showModal({
+              title: '抓拍失败',
+              content: res.data.Message,
+              showCancel:false
+            })
+          }
+        },
+        fail:function(e){
+          wx.showToast({
+            title: '连接服务器异常',
+            image:'/images/error.png'
+          })
+        },
+        complete:function(res){
+          this_.data.controlData.isControling=false;
+          this_.setData({
+            controlData:this_.data.controlData
+          })
+        }
+      })
+    }else{
+      wx.showToast({
+        title: '车场异常',
+        image:'/images/error.png'
+      })
+    }
+  },
   //摄像头选择事件
   cameraChange(e){
     this.data.controlData.cameraIndex=e.detail.cameraIndex;
+    this.setData({
+      controlData: this.data.controlData
+    })
+  },
+  //无牌车出场方式选择事件
+  NoPlateOutModeChange(e){
+    this.data.controlData.NoPlate_OutMode_index=e.detail.NoPlate_OutMode_index;
     this.setData({
       controlData: this.data.controlData
     })
@@ -180,43 +352,21 @@ Page({
   controlEvent(e){
     var type_=e.detail.type;
     var value_=e.detail.value;
+    var this_=this;
     console.log("controlEvent[type:"+type_+" value:"+value_+"]");
     switch(type_){
       case 'open':
-        this.controlDaozha({ID:value_});
+        this_.controlDaozha({ID:value_});
       break;
-    }
-  },
-  //退出登录按钮
-  logout(e){
-    var this_=this;
-    wx.showModal({
-      title: '确认退出',
-      content: '请确认是否退出当前账户',
-      success (res) {
-        if (res.confirm) {
-          wx.removeStorage({
-            key: 'Appsession',
-            success:function(e){
-              app.requestHeader.Appsession=null;
-              app.isLogin=false;
-            }
-          })
-          this_.goLogin('tip=退出成功');
-        } 
-      }
-    })
-  },
-  //用户界面菜单点击事件
-  userMenuEvent(e){
-    var type_=e.detail.type;
-    var value_=e.detail.value;
-    console.log("userMenuEvent[type:"+type_+" value:"+value_+"]");
-    switch(type_){
-      case 'logout':
-        this.logout();
+      case 'close':
+       
       break;
-
+      case 'camera':
+        this_.capturePic(value_);
+      break;
+      default:
+        this_.changeParkSet(type_,value_);
+      break;
     }
   },
   //跳转到登录界面
@@ -233,16 +383,89 @@ Page({
       }
     })
   },
-  //切到前台
+  //退出登录按钮
+  logout(e){
+    var this_=this;
+    wx.showModal({
+      title: '切换账号',
+      content: '是否确认退出当前账号',
+      success (res) {
+        if (res.confirm) {
+          wx.removeStorage({
+            key: 'Appsession',
+            complete:function(e){
+              wx.removeStorage({
+                key: 'ParkIndex',
+              })
+              app.requestHeader.Appsession=null;
+              app.isLogin=false;
+            }
+          })
+          this_.goLogin('tip=退出成功');
+        } 
+      }
+    })
+  },
+  //更改密码成功
+  changepwSuccess(e){
+    var this_=this;
+    wx.removeStorage({
+      key: 'Appsession',
+      complete:function(e){
+        wx.removeStorage({
+          key: 'ParkIndex',
+        })
+        app.requestHeader.Appsession=null;
+        app.isLogin=false;
+      }
+    })
+    this_.goLogin('tip=更改密码成功');
+  },
+  //用户界面菜单点击事件
+  userMenuEvent(e){
+    var type_=e.detail.type;
+    var value_=e.detail.value;
+    console.log("userMenuEvent[type:"+type_+" value:"+value_+"]");
+    switch(type_){
+      case 'logout':
+        this.logout();
+      break;
+      case 'changepwOk':
+        this.changepwSuccess();
+      break;
+      case 'changeparkOk':
+        this.parkChange(value_);
+      break;
+    }
+  },
+  //下拉刷新事件
+  onPullDownRefresh: function () {
+    //停止下拉刷新
+    wx.stopPullDownRefresh();
+    //调用刷新时将执行的方法
+    if(this.data.PageCur=='control')this.parkChange(app.globalData.parkIndex);
+  },
+  //切到前台显示事件
   onShow:function(){
     var this_=this;
-    if(this.data.loginSuccess){
+    if(this.data.loginSuccess&&app.isLogin){//若登录成功开始加载数据
       wx.showToast({
         title: '登录成功',
         image: '/images/success.png'
       })
-      this_.setData({
-        loginSuccess:false
+      this_.setData({loginSuccess:false})
+      wx.getStorage({
+        key: 'ParkIndex',
+        success:function(res){
+          if(res.data<app.globalData.parkList.length)app.globalData.parkIndex=res.data;
+          else app.globalData.parkIndex=0;
+        },
+        fail:function(res){
+          app.globalData.parkIndex=0;
+        },
+        complete:function(res){
+          this_.parkChange(app.globalData.parkIndex);
+        }
       })
     }
     if(!app.isLogin){
@@ -258,18 +481,6 @@ Page({
           this_.goLogin('tip=请先登录');
         }
       });
-    }else{
-      if(this_.data.reportData.data==null){
-        this_.updateReportData();
-      }
-      if(this_.data.controlData.cameraList.length==0){
-        this_.queryPoint();
-      }
-      this.setData({
-        parkList: app.globalData.parkList,
-        parkIndex: app.globalData.parkIndex,
-        userInfo:app.globalData.userInfo
-      })
     }
   }
 })

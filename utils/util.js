@@ -3,7 +3,7 @@ const formatNumber = n => {
   return n[1] ? n : '0' + n
 }
 
-function getData(istime){
+function getDate(istime){
   var date=new Date();
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -16,5 +16,5 @@ function getData(istime){
 }
 
 module.exports = {
-  getData: getData
+  getDate: getDate
 }

@@ -18,7 +18,7 @@
   </block>
   <block wx:if="{{!showReport.isLoad&&!showReport.data}}">
     <image src="/images/error.png" style="width:80rpx;height:80rpx;margin:20rpx auto;display:block;"></image>
-    <view class="text-center">加载数据失败:{{showReport.err_info}}</view>
+    <view class="text-center text-red">{{showReport.err_info}}</view>
   </block>
   <block wx:if="{{!showReport.isLoad&&showReport.data}}">
     <view class="data-info-table-title text-df text-bold flex align-center text-center padding-top-xs">
@@ -27,17 +27,17 @@
       <view class="flex-twice">金额</view>
     </view>
     <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs">
-      <view class="flex-treble">包年包月</view>
+      <view class="flex-treble">包年包月订单</view>
       <view class="flex-twice">{{showReport.data.VipCount}}</view>
       <view class="flex-twice text-price">{{showReport.data.VipPrice}}</view>
     </view>
     <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs">
-      <view class="flex-treble">临时缴费</view>
+      <view class="flex-treble">临时缴费订单</view>
       <view class="flex-twice">{{showReport.data.IOCount}}</view>
       <view class="flex-twice text-price">{{showReport.data.IOPrice}}</view>
     </view>
     <view class="data-info-table-tb text-df flex align-center text-center padding-top-xs">
-      <view class="flex-treble">异常进出</view>
+      <view class="flex-treble">异常进出订单</view>
       <view class="flex-twice">{{showReport.data.AbnormalCount}}</view>
       <view class="flex-twice text-price">0</view>
     </view>
