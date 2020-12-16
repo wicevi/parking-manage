@@ -90,7 +90,7 @@ image {
 }
 
 .radius {
-	border-radius: 8rpx;
+	border-radius: 12rpx;
 }
 
 /* ==================

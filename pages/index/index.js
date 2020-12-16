@@ -443,7 +443,8 @@ Page({
     //停止下拉刷新
     wx.stopPullDownRefresh();
     //调用刷新时将执行的方法
-    if(this.data.PageCur=='control')this.parkChange(app.globalData.parkIndex);
+    if(this.data.PageCur=='control')this.queryControlData();
+    else if(this.data.PageCur=='home')this.updateReportData();
   },
   //切到前台显示事件
   onShow:function(){
@@ -482,5 +483,10 @@ Page({
         }
       });
     }
+    this.setData({
+      reportData:this.data.reportData,
+      controlData:this.data.controlData,
+      userData:this.data.userData,
+    });
   }
 })

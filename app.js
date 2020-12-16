@@ -8,12 +8,13 @@ App({
     query_parks:"/app/config/parks/query",
     query_report:"/app/park/income/query",
     query_point:"/app/config/point/query",
-    query_orders:"/app/io/order/query",
     query_parksets:"/app/config/park/query",
     change_parkset:"/app/config/park/mod",
     change_password:"/app/config/user/pw/mod",
     opengate:"/app/config/point/opengate",
     snapimage:"/app/config/point/snapimage",
+    query_inorders:"/app/park/present/query",
+    query_outorders:"/app/park/leave/query",
   },
   onLaunch: function () {
     //获取导航栏相关
