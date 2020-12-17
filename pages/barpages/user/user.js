@@ -13,6 +13,7 @@ Component({
   data: {
     isOpenModal_changepark:false,
     select_park_index:app.globalData.parkIndex,
+    isOpenModal_logout:false,
     isOpenModal_changepw:false,
     old_pw:"",
     new_pw:"",
@@ -31,6 +32,9 @@ Component({
             isOpenModal_changepark:true, 
             select_park_index:app.globalData.parkIndex,
           });
+        break;
+        case 'logout':
+          this.setData({isOpenModal_logout:true});
         break;
         default:
           this.triggerEvent("userMenuEvent", {
@@ -53,6 +57,16 @@ Component({
       this_.triggerEvent("userMenuEvent", {
         type:'changeparkOk',
         value:this_.data.select_park_index
+      });
+    },
+    closeModal_logout(e){
+      this.setData({isOpenModal_logout:false});
+    },
+    confirmLogout(e){
+      this.setData({isOpenModal_logout:false,});
+      this.triggerEvent("userMenuEvent", {
+        type:'confirmLogout',
+        value:null
       });
     },
     closeModal_changepw(e){

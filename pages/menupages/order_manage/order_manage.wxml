@@ -1,14 +1,12 @@
 <!--pages/menupages/order_manage/order_manage.wxml-->
 <wxs module="tools" src="../../../utils/tool.wxs"></wxs>
-<!--顶部导航-->
-<view class="top-select-view bg-white padding-top shadow">
-  <view class="flex align-center text-lg text-bold text-black margin-lr">
-    <view class="flex-sub text-center padding-bottom-xs">
-      <text class="padding-bottom-xs top-bar-item padding-lr-xs">车牌号</text>
-    </view>
-    <view class="flex-sub text-center padding-bottom-xs ">
-      <text class="padding-bottom-xs top-bar-item padding-lr-sm">{{PageCur=='inOrder'?'进场':'离场'}}时间</text>
-    </view>
+<!-- 订单列表标题 -->
+<view class="flex align-center text-lg text-bold text-black margin-lr order-info-view-title margin-top">
+  <view class="flex-sub text-center">
+    <text class="padding-bottom-xs top-bar-item padding-lr-xs">车牌号</text>
+  </view>
+  <view class="flex-sub text-center">
+    <text class="padding-bottom-xs top-bar-item padding-lr-sm">{{PageCur=='inOrder'?'进场':'离场'}}时间</text>
   </view>
 </view>
 <!--订单列表为空-->

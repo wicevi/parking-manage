@@ -20,7 +20,6 @@ Page({
     controlData:{
       cameraList:[],
       cameraPic:null,
-      cameraIndex:0,
       parkSet:null,
       NoPlate_OutMode_index:0,
       isControling:false
@@ -37,7 +36,6 @@ Page({
   //车场切换事件
   parkChange(parkIndex) {
     var this_=this;
-    var timer1=null;
     app.globalData.parkIndex = parkIndex;
     this_.setData({
       userData: app.globalData
@@ -50,6 +48,8 @@ Page({
       data: parkIndex,
       key: 'ParkIndex',
     });
+    //停止下拉刷新
+    wx.stopPullDownRefresh();
   },
   //底部标签点击事件
   navChange(e) {
@@ -93,7 +93,9 @@ Page({
           this_.data.reportData.isLoad=false;
           this_.setData({
             reportData:this_.data.reportData
-          })
+          });
+          //停止下拉刷新
+          wx.stopPullDownRefresh();
         }
       })
     }else{
@@ -152,6 +154,8 @@ Page({
               complete:function(res){
                 this_.data.controlData.isControling=false;
                 this_.setData({controlData:this_.data.controlData});
+                //停止下拉刷新
+                wx.stopPullDownRefresh();
               }
             })
           }else{
@@ -162,6 +166,8 @@ Page({
             })
             this_.data.controlData.isControling=false;
             this_.setData({controlData:this_.data.controlData});
+            //停止下拉刷新
+            wx.stopPullDownRefresh();
           }
         },
         fail:function(e){
@@ -171,6 +177,8 @@ Page({
           })
           this_.data.controlData.isControling=false;
           this_.setData({controlData:this_.data.controlData});
+          //停止下拉刷新
+          wx.stopPullDownRefresh();
         },
       })
     }else{
@@ -301,7 +309,7 @@ Page({
         success:function(res){
           console.log(res);
           if(res.data.Code=="success"){
-            this_.data.controlData.cameraPic=res.data.Result.Image
+            this_.data.controlData.cameraPic=res.data.Result.Image;
             wx.showToast({
               title: '抓拍成功',
               image:'/images/success.png'
@@ -333,13 +341,6 @@ Page({
         image:'/images/error.png'
       })
     }
-  },
-  //摄像头选择事件
-  cameraChange(e){
-    this.data.controlData.cameraIndex=e.detail.cameraIndex;
-    this.setData({
-      controlData: this.data.controlData
-    })
   },
   //无牌车出场方式选择事件
   NoPlateOutModeChange(e){
@@ -383,29 +384,6 @@ Page({
       }
     })
   },
-  //退出登录按钮
-  logout(e){
-    var this_=this;
-    wx.showModal({
-      title: '切换账号',
-      content: '是否确认退出当前账号',
-      success (res) {
-        if (res.confirm) {
-          wx.removeStorage({
-            key: 'Appsession',
-            complete:function(e){
-              wx.removeStorage({
-                key: 'ParkIndex',
-              })
-              app.requestHeader.Appsession=null;
-              app.isLogin=false;
-            }
-          })
-          this_.goLogin('tip=退出成功');
-        } 
-      }
-    })
-  },
   //更改密码成功
   changepwSuccess(e){
     var this_=this;
@@ -427,8 +405,12 @@ Page({
     var value_=e.detail.value;
     console.log("userMenuEvent[type:"+type_+" value:"+value_+"]");
     switch(type_){
-      case 'logout':
-        this.logout();
+      case 'confirmLogout':
+        wx.removeStorage({key: 'Appsession'});
+        wx.removeStorage({key: 'ParkIndex'});
+        app.requestHeader.Appsession=null;
+        app.isLogin=false;
+        this.goLogin('tip=退出成功');
       break;
       case 'changepwOk':
         this.changepwSuccess();
@@ -440,11 +422,10 @@ Page({
   },
   //下拉刷新事件
   onPullDownRefresh: function () {
-    //停止下拉刷新
-    wx.stopPullDownRefresh();
     //调用刷新时将执行的方法
     if(this.data.PageCur=='control')this.queryControlData();
     else if(this.data.PageCur=='home')this.updateReportData();
+    else this.parkChange(app.globalData.parkIndex);
   },
   //切到前台显示事件
   onShow:function(){

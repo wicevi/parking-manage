@@ -14,8 +14,8 @@
   margin: 20rpx auto;
 }
 .video-img{
-  width: 432rpx;
-  height: 243rpx;
+  width: 600rpx;
+  height: 338rpx;
 }
 .video-view-tip-img{
   width: 40rpx;
@@ -49,4 +49,27 @@
 .in-out-view{
   padding: 20rpx;
   border: 1rpx solid #dddee1;
+}
+.changepw-input{
+  width: 60%;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 30rpx;
+  margin: 10rpx auto;
+  padding: 5rpx 10rpx;
+  border: 1rpx solid #808695;
+  border-radius: 999rpx;
+  color: #808695;
+}
+.changepw-input-select{
+  width: 60%;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  margin: 10rpx auto;
+  padding: 5rpx 10rpx;
+  border: 4rpx solid #1296db;
+  border-radius: 999rpx;
+  color: #1296db;
 }

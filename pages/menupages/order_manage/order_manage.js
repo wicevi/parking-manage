@@ -22,6 +22,9 @@ Page({
         PageCur: e.currentTarget.dataset.cur
       })
       this.loadOrder();
+      wx.setNavigationBarTitle({
+        title: this.data.PageCur=='inOrder'?'在场订单':'离场订单',
+      })
     }
   },
   //查看出入场图片
@@ -103,6 +106,9 @@ Page({
   onShow:function(){
     if(!this.data.orderList||this.data.orderList.length==0){
       this.loadOrder();
+      wx.setNavigationBarTitle({
+        title: this.data.PageCur=='inOrder'?'在场订单':'离场订单',
+      })
     }else{
       this.setData({orderList:this.data.orderList});
     }

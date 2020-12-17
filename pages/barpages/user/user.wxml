@@ -66,7 +66,7 @@
         <text class="cuIcon-close text-red"></text>
       </view>
     </view>
-    <view class="padding-tb flex justify-center">
+    <view class="padding-tb-xl flex justify-center">
       <image style="width:80rpx;height:80rpx;" src="/images/changepw.png"></image>
     </view>
     <view class="flex align-center changepw-input">
@@ -90,10 +90,10 @@
     <view class="err-info-view" wx:if="{{err_info}}">
       {{err_info}}
     </view>
-    <view class="padding-tb"></view>
+    <view class="padding-xl"></view>
     <view class="cu-bar bg-white justify-end">
       <view class="action">
-        <view class="margin-left padding-xs padding-lr my-btn bg-red round" bindtap="changePassword">
+        <view class="margin-left padding-xs padding-lr my-btn bg-orange round" bindtap="changePassword">
           <text>确认更改</text>
         </view>
         <view class="margin-left padding-xs padding-lr my-btn bg-grey round" bindtap="closeModal_changepw">
@@ -112,7 +112,7 @@
         <text class="cuIcon-close text-red"></text>
       </view>
     </view>
-    <view class="padding-tb flex justify-center">
+    <view class="padding-tb-xl flex justify-center">
       <image style="width:80rpx;height:80rpx;" src="/images/changepark.png"></image>
     </view>
     <block wx:for="{{userData.parkList}}" wx:for-index="idx">
@@ -122,14 +122,50 @@
         </view>
       </view>
     </block>
-    <view class="padding-tb"></view>
+    <view class="padding-xl"></view>
     <view class="cu-bar bg-white justify-end">
       <view class="action">
-        <view class="margin-left padding-xs padding-lr my-btn bg-red round" bindtap="changePark">
+        <view class="margin-left padding-xs padding-lr my-btn bg-Primary round" bindtap="changePark">
           <text>确认切换</text>
         </view>
         <view class="margin-left padding-xs padding-lr my-btn bg-grey round" bindtap="closeModal_changepark">
           <text>关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<!-- 确认退出弹窗 -->
+<view class="cu-modal {{isOpenModal_logout?'show':''}}">
+  <view class="cu-dialog text-lg">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold text-xl">确认退出当前账号</view>
+      <view class="action" bindtap="closeModal_logout">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-tb-xl flex justify-center">
+      <image style="width:80rpx;height:80rpx;" src="/images/logout.png"></image>
+    </view>
+    <view class="margin-lr">
+      <view>
+        请确认是否退出当前账号
+      </view>
+      <view class="margin-lr text-red text-sm padding-bottom">
+        退出之后需要重新输入密码登录
+      </view>
+      <view class="flex align-center changepw-input-select justify-center">
+        {{userData.userInfo.userName}}
+      </view>
+    </view>
+    <view class="padding-xl"></view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <view class="margin-left padding-xs padding-lr my-btn bg-red round" bindtap="confirmLogout">
+          <text>确认退出</text>
+        </view>
+        <view class="margin-left padding-xs padding-lr my-btn bg-grey round" bindtap="closeModal_logout">
+          <text>取消</text>
         </view>
       </view>
     </view>

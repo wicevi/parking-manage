@@ -7,6 +7,8 @@ Component({
     }
   },
   data:{
+    isOpenModal_selectCamera:false,
+    select_camera_index:0,
     outMode:[
       {
         name:"免费放行",
@@ -24,10 +26,13 @@ Component({
   },
   methods:{
     selectCamera(e){
-      var cameraIndex_=e.detail.value;
-      this.triggerEvent("cameraChange", {
-        cameraIndex:cameraIndex_
-      });
+      this.setData({select_camera_index:e.currentTarget.dataset.value});
+    },
+    closeModal_selectCamera(e){
+      this.setData({isOpenModal_selectCamera:false});
+    },
+    openModal_selectCamera(e){
+      this.setData({isOpenModal_selectCamera:true});
     },
     selectNoPlateOutMode(e){
       var NoPlate_OutMode_index_=e.detail.value;
@@ -42,6 +47,7 @@ Component({
         type:type_,
         value:value_
       });
+      this.closeModal_selectCamera();
     }, 
   }
 })

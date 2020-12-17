@@ -7,16 +7,8 @@
   </view>
   <view class="flex-treble"></view>
   <block wx:if="{{controlSet.cameraList&&controlSet.cameraList.length!=0}}">
-    <view class="">
-      <view class="cu-tag line-blue margin-right-xs">
-        <picker range="{{controlSet.cameraList}}" range-key="Name" value="{{controlSet.cameraIndex}}" bindchange="selectCamera">
-          <text>{{controlSet.cameraList[controlSet.cameraIndex].Name}}</text>
-          <text class="cuIcon-unfold"></text>
-        </picker>
-      </view>
-    </view>
     <view class="text-sm margin-right text-center">
-      <view class="padding-xs my-btn bg-blue" data-type="camera" data-value="{{controlSet.cameraList[controlSet.cameraIndex].ID}}" bindtap="tapEvent">
+      <view class="padding-tb-xs padding-lr-sm my-btn bg-blue" bindtap="openModal_selectCamera">
         <text>抓拍</text>
         <text class="cuIcon-camera padding-left-xs"></text>
       </view>
@@ -24,7 +16,7 @@
   </block>
 </view>
 <view class="video-view bg-white shadow">
-  <view class="flex align-center justify-center {{controlSet.cameraPic?'':'padding'}}">
+  <view class="flex align-center justify-center {{controlSet.cameraPic?'padding-tb-xs':'padding'}}">
     <image class="video-img" src="http://47.103.217.112{{controlSet.cameraPic}}" wx:if="{{controlSet.cameraPic}}"></image>
     <block wx:if="{{!controlSet.cameraPic}}">
       <view class="padding-xs">
@@ -132,3 +124,36 @@
   <view class='gray-text'>加载中...</view>
 </view>
 <view class='cu-tabbar-height'></view>
+
+<!-- 抓拍摄像头选择弹窗 -->
+<view class="cu-modal {{isOpenModal_selectCamera?'show':''}}">
+  <view class="cu-dialog text-lg">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold text-xl">选择摄像头</view>
+      <view class="action" bindtap="closeModal_selectCamera">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-tb-xl flex justify-center">
+      <image style="width:80rpx;height:80rpx;" src="/images/camera2.png"></image>
+    </view>
+    <block wx:for="{{controlSet.cameraList}}" wx:for-index="idx">
+      <view class="flex align-center changepw-input{{idx==select_camera_index?'-select':''}}" >
+        <view class="flex-twice padding-left-xs text-center text-ellipsis" data-value="{{idx}}" bindtap="selectCamera">
+          {{item.Name}}
+        </view>
+      </view>
+    </block>
+    <view class="padding-xl"></view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <view class="margin-left padding-xs padding-lr my-btn bg-Primary round" data-type="camera" data-value="{{controlSet.cameraList[select_camera_index].ID}}" bindtap="tapEvent">
+          <text>确认抓拍</text>
+        </view>
+        <view class="margin-left padding-xs padding-lr my-btn bg-grey round" bindtap="closeModal_selectCamera">
+          <text>关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

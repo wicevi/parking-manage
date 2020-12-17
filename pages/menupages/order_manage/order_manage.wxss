@@ -1,7 +1,10 @@
 /* pages/menupages/order_manage/order_manage.wxss */
 .top-bar-item{
   margin: 0rpx auto;
-  border-bottom: 1rpx solid #2d8cf0;
+}
+.order-info-view-title{
+  padding-bottom: 6rpx;
+  border-bottom: 2rpx solid #d8d8d8;
 }
 .order-item-value-view{
   display: inline-block;
