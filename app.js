@@ -12,9 +12,13 @@ App({
     change_parkset:"/app/config/park/mod",
     change_password:"/app/config/user/pw/mod",
     opengate:"/app/config/point/opengate",
+    closegate:"/app/config/point/closegate",
     snapimage:"/app/config/point/snapimage",
     query_inorders:"/app/park/present/query",
     query_outorders:"/app/park/leave/query",
+    query_vipcars:"/app/vip/park/query",
+    delete_vipcar:"/app/config/vip/del",
+    add_vipcar:"/app/config/vip/add",
   },
   onLaunch: function () {
     //获取导航栏相关

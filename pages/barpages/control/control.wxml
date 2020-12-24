@@ -2,13 +2,13 @@
 <!--车场摄像头视频-->
 <view class="cu-bar bg-white shadow">
   <view class="action">
-    <text class="cuIcon-titles text-blue"></text>
+    <text class="cuIcon-titles text-primer"></text>
     <text class="text-xl text-bold padding-bottom-xxs">车场实况</text>
   </view>
   <view class="flex-treble"></view>
   <block wx:if="{{controlSet.cameraList&&controlSet.cameraList.length!=0}}">
     <view class="text-sm margin-right text-center">
-      <view class="padding-tb-xs padding-lr-sm my-btn bg-blue" bindtap="openModal_selectCamera">
+      <view class="my-btn bg-Primary" style="padding:15rpx 24rpx;border-radius: 9999rpx;" bindtap="openModal_selectCamera">
         <text>抓拍</text>
         <text class="cuIcon-camera padding-left-xs"></text>
       </view>

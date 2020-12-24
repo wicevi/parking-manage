@@ -15,15 +15,15 @@ Component({
         title: '订单管理',
         name: 'order manage',
         color: 'cyan',
-        icon: 'edit',
+        icon: 'form',
         path:'/pages/menupages/order_manage/order_manage'
       },
       {
-        title: '收费调整',
-        name: 'fee adjust',
-        color: 'blue',
-        icon: 'refund',
-        path:'/pages/menupages/fee_adjust/fee_adjust'
+        title: '月卡管理',
+        name: 'vip manage',
+        color: 'Primary',
+        icon: 'vip',
+        path:'/pages/menupages/vip_manage/vip_manage'
       },
       {
         title: '车辆管理',

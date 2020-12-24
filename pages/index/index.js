@@ -189,18 +189,18 @@ Page({
     }
   },
   //控制道闸
-  controlDaozha(e){
+  controlDaozha(isopen,pointID){
     var this_=this;
     if(app.globalData.parkList&&app.globalData.parkIndex<app.globalData.parkList.length){
       this_.data.controlData.isControling=true;
       this_.setData({controlData:this_.data.controlData});
       wx.request({
-        url: app.HOST+app.URLS.opengate,
+        url: app.HOST+(isopen?app.URLS.opengate:app.URLS.closegate),
         method:"POST",
         header:app.requestHeader,
         data:{
           ParkID:app.globalData.parkList[app.globalData.parkIndex].ID,
-          PointID:e.ID
+          PointID:pointID
         },
         success:function(res){
           console.log(res);
@@ -218,6 +218,7 @@ Page({
           }
         },
         fail:function(e){
+          console.log(e);
           wx.showToast({
             title: '连接服务器异常',
             image:'/images/error.png'
@@ -357,10 +358,10 @@ Page({
     console.log("controlEvent[type:"+type_+" value:"+value_+"]");
     switch(type_){
       case 'open':
-        this_.controlDaozha({ID:value_});
+        this_.controlDaozha(true,value_);
       break;
       case 'close':
-       
+        this_.controlDaozha(false,value_);
       break;
       case 'camera':
         this_.capturePic(value_);

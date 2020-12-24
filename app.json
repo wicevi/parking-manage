@@ -6,7 +6,8 @@
     "pages/menupages/blacklist_manage/blacklist_manage",
     "pages/menupages/add_edit_fee/add_edit_fee",
     "pages/menupages/car_manage/car_manage",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/menupages/vip_manage/vip_manage"
   ],
   "window": {
     "backgroundColor": "#f0f0f0",

@@ -43,8 +43,8 @@
       <text class="text-grey padding-left-xs">更改密码</text>
     </button>
   </view>
-  <view class="cu-item arrow" data-type="feedback" bindtap="tapEvent">
-    <button class="cu-btn content">
+  <view class="cu-item arrow">
+    <button class="cu-btn content" open-type="feedback">
       <image src="/images/feedback.png" class="user-menu-img"></image>
       <text class="text-grey padding-left-xs">意见反馈</text>
     </button>

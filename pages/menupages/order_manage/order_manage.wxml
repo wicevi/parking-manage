@@ -1,5 +1,16 @@
 <!--pages/menupages/order_manage/order_manage.wxml-->
 <wxs module="tools" src="../../../utils/tool.wxs"></wxs>
+<!-- 搜索框 -->
+<view class="cu-bar search bg-white shadow">
+  <view class="search-form round">
+    <text class="cuIcon-search"></text>
+    <input type="text" placeholder="输入车牌号搜索订单" confirm-type="search" value="{{searchPlate}}" bindinput="inputPlate"></input>
+    <text class="cuIcon-close" wx:if="{{searchPlate}}" bindtap="clearPlate"></text>
+  </view>
+  <view class="action">
+    <view class="my-btn bg-Primary padding-tb-xs padding-lr-sm search-btn" style="border-radius: 999rpx;" bindtap="searchOrder">搜索</view>
+  </view>
+</view>
 <!-- 订单列表标题 -->
 <view class="flex align-center text-lg text-bold text-black margin-lr order-info-view-title margin-top">
   <view class="flex-sub text-center">
@@ -31,6 +42,7 @@
     </view>
   </view>
 </view>
+<view class="padding-xs"></view>
 <!-- 订单详情弹窗 -->
 <view class="cu-modal {{isOpenModal_info?'show':''}}">
   <view class="cu-dialog text-lg">
@@ -48,7 +60,7 @@
         </view>
         <view class="flex align-center justify-between flex-treble bg-white padding-xs   shadow radius">
           <view class="order-item-value-view">{{tools.strToPlate(orderList[orderIndex].Plate)}}</view>
-          <view class="cu-tag line-green">{{orderList[orderIndex].PayStatus?orderList[orderIndex].PayStatus:'在场车辆'}}</view>
+          <view class="cu-tag line-{{!orderList[orderIndex].PayStatus||orderList[orderIndex].PayStatus=='已支付'||orderList[orderIndex].PayStatus=='无需缴费'?'green':'red'}}">{{orderList[orderIndex].PayStatus?orderList[orderIndex].PayStatus:'在场车辆'}}</view>
         </view>
       </view>
       <!-- 进场时间 -->
@@ -57,7 +69,7 @@
           <view>进场时间</view>
         </view>
         <view class="flex align-center justify-between flex-treble bg-white padding-xs   shadow radius">
-          <view class="order-item-value-view">{{orderList[orderIndex].InTime}}</view>
+          <view class="order-item-value-view">{{orderList[orderIndex].InTime?orderList[orderIndex].InTime:'无入场记录'}}</view>
         </view>
       </view>
       <!-- 进场图片 -->
@@ -73,11 +85,11 @@
         </view>
       </view>
       <!-- 离场时间 -->
-      <view class="flex align-center margin-xs margin-tb-sm">
+      <view class="flex align-center margin-xs margin-tb-sm" wx:if="{{orderList[orderIndex].OutTime}}">
         <view class="flex-sub">
           <view>离场时间</view>
         </view>
-        <view class="flex align-center justify-between flex-treble bg-white padding-xs   shadow radius">
+        <view class="flex align-center justify-between flex-treble bg-white padding-xs shadow radius">
           <view class="order-item-value-view">{{orderList[orderIndex].OutTime?orderList[orderIndex].OutTime:'暂未离场'}}</view>
         </view>
       </view>
@@ -99,7 +111,7 @@
           <view>停车时长</view>
         </view>
         <view class="flex align-center justify-between flex-treble bg-white padding-xs   shadow radius">
-          <view class="order-item-value-view">{{orderList[orderIndex].Stay}}</view>
+          <view class="order-item-value-view">{{orderList[orderIndex].Stay?orderList[orderIndex].Stay:'无记录'}}</view>
         </view>
       </view>
       <!-- 停车费用 -->
@@ -137,6 +149,7 @@
   </view>
 </view>
 <!--底部标签-->
+<view class='cu-tabbar-height'></view>
 <view class="cu-bar tabbar bg-white shadow foot">
   <view class="action" bindtap="navChange" data-cur="inOrder">
     <view class='cuIcon-cu-image'>
