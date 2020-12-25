@@ -34,10 +34,10 @@ Component({
       },
       {
         title: '历史报表',
-        name: 'historical report',
+        name: 'history report',
         color: 'brown',
         icon: 'time',
-        path:'/pages/menupages/historical_report/historical_report'
+        path:'/pages/menupages/history_report/history_report'
       },
       {
         title: '黑名单管理',
